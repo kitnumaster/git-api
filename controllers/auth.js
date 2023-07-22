@@ -59,9 +59,10 @@ exports.login = (req, res, next) => {
       const token = jwt.sign(
         {
           email: loadedUser.email,
-          userId: loadedUser._id.toString()
+          userId: loadedUser._id.toString(),
+          name:loadedUser.name
         },
-        'k-ifarm_hrDcajP2wa',
+        'NLd0tmV6hw',
         { expiresIn: '24h' }
       );
       res.status(200).json({ token: token, userId: loadedUser._id.toString() });
@@ -73,3 +74,14 @@ exports.login = (req, res, next) => {
       next(err);
     });
 };
+
+exports.CurrentUser = (req, res, next) => {
+  console.log(req)
+  res.status(200).json({
+    message: {
+      userId: req.userId,
+      email: req.email,
+      name: req.name
+    }
+  })
+}
