@@ -16,6 +16,10 @@ const userSchema = new Schema(
       type: String,
       required: true
     },
+    userType: {
+      type: Number, //1 admin, 2,designer, 3 customer
+      require: true
+    },
     status: {
       type: String,
       default: 'I am new!'
