@@ -20,8 +20,16 @@ module.exports = (req, res, next) => {
     error.statusCode = 401;
     throw error;
   }
-  req.userId = decodedToken.userId;
-  req.email = decodedToken.email;
-  req.name = decodedToken.name;
+  if (decodedToken.userType == 'admin') {
+    req.userId = decodedToken.userId;
+    req.email = decodedToken.email;
+    req.name = decodedToken.name;
+    req.userType = decodedToken.userType;
+  } else {
+    req.userId = decodedToken.userId;
+    req.email = decodedToken.email;
+    req.userType = decodedToken.userType;
+  }
+
   next();
 };

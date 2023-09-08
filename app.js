@@ -16,6 +16,7 @@ const fileTypeRoutes = require('./routes/setting/file-type')
 const setRoutes = require('./routes/setting/set')
 const inMemoryStorage = multer.memoryStorage()
 const uploadRoute = require('./routes/upload')
+const accountRoutes = require('./routes/account')
 require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })
 const app = express();
 
@@ -64,6 +65,7 @@ app.use('/setting', jewerlyTypeRoutes, materialRoutes
   , housingRoutes, trendRoutes
   , designerLevelRoutes, detailRoutes
   , fileTypeRoutes, setRoutes)
+app.use('/', accountRoutes)
 
 app.use((error, req, res, next) => {
   console.log(error);

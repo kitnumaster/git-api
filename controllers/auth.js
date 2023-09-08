@@ -61,7 +61,8 @@ exports.login = (req, res, next) => {
         {
           email: loadedUser.email,
           userId: loadedUser._id.toString(),
-          name:loadedUser.name
+          name: loadedUser.name,
+          userType: 'admin'
         },
         'NLd0tmV6hw',
         { expiresIn: '24h' }
@@ -143,7 +144,7 @@ exports.AccountLogin = (req, res, next) => {
         {
           email: loadedUser.email,
           userId: loadedUser._id.toString(),
-          name:loadedUser.name
+          userType: loadedUser.userType
         },
         'NLd0tmV6hw',
         { expiresIn: '24h' }

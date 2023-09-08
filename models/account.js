@@ -7,6 +7,13 @@ const accountSchema = new Schema(
       type: Number,
       default: 1,//1=customer, 2=designer
     },
+    requestDesigner: {
+      type: Boolean,
+      default: false,
+    },
+    approveAt: {
+      type: Date
+    },
     email: {
       type: String,
       index: true,
