@@ -6,7 +6,7 @@ router.post(
     '/upload',
     (req, res, next) => {
 
-        console.log(req)
+        // console.log(req)
         if (!req.file) {
             const error = new Error('No image provided.');
             error.statusCode = 422;

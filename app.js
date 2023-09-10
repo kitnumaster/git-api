@@ -1,5 +1,5 @@
 const path = require('path')
-
+const fs = require('fs')
 const express = require('express');
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
@@ -22,6 +22,7 @@ const app = express();
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
+    fs.mkdirSync("temp", { recursive: true })
     cb(null, 'temp');
   },
   filename: (req, file, cb) => {
