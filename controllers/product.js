@@ -1,15 +1,31 @@
 const { validationResult } = require('express-validator/check')
+const {
+    moveFile
+} = require('./upload')
 const Product = require('../models/product')
 
 const CreateProduct = (req, res, next) => {
     const errors = validationResult(req);
     if (req.userType == 2) {
+        const accountId = req.userId
         if (!errors.isEmpty()) {
             const error = new Error('Validation failed, entered data is incorrect.');
             error.statusCode = 422;
             throw error;
         }
-        req.body.account = req.userId
+        req.body.account = accountId
+
+        if (req.body.files) {
+            let move = []
+            for (let i of req.body.files) {
+
+                let newPath = `files/${accountId}`
+                let newFile = moveFile('./' + i, `./${newPath}`)
+                move.push(`files/${newFile}`)
+            }
+            req.body.files = move
+        }
+
         const body = req.body
         // console.log(body)
         const product = new Product(body)
@@ -139,7 +155,20 @@ const UpdateProduct = (req, res, next) => {
             throw error;
         }
 
+        if (req.body.update.files) {
+            let move = []
+            for (let i of req.body.update.files) {
+
+                let newPath = `files/${accountId}`
+                let newFile = moveFile('./' + i, `./${newPath}`)
+                move.push(`files/${newFile}`)
+            }
+            req.body.update.files = move
+        }
+
         const update = req.body.update
+
+
         Product.findById(productId)
             .then(product => {
                 if (!product) {
