@@ -40,32 +40,43 @@ const GetProducts = (req, res, next) => {
     if (req.userType && req.userType == 2) {
         query.account = req.userId
     }
+    const currentPage = req.query.page || 1;
+    const perPage = 2;
+    let totalItems;
     Product.find(query)
-        .populate("material", {
-            materialName: 1,
-        })
-        .populate("housing", {
-            housingName: 1,
-        })
-        .populate("trend", {
-            trendName: 1,
-        })
-        .populate("fileType", {
-            fileTypeName: 1,
-        })
-        .populate("jewerlyType", {
-            jewerlyTypeName: 1,
-        })
-        .populate("detail", {
-            detailName: 1,
-        })
-        .populate("set", {
-            setName: 1,
+        .countDocuments()
+        .then(count => {
+            totalItems = count;
+            return Product.find(query)
+                .populate("material", {
+                    materialName: 1,
+                })
+                .populate("housing", {
+                    housingName: 1,
+                })
+                .populate("trend", {
+                    trendName: 1,
+                })
+                .populate("fileType", {
+                    fileTypeName: 1,
+                })
+                .populate("jewerlyType", {
+                    jewerlyTypeName: 1,
+                })
+                .populate("detail", {
+                    detailName: 1,
+                })
+                .populate("set", {
+                    setName: 1,
+                })
+                .skip((currentPage - 1) * perPage)
+                .limit(perPage);
         })
         .then(products => {
             res.status(200).json({
                 message: 'Fetched successfully.',
                 products: products,
+                totalItems: totalItems,
             });
         })
         .catch(err => {
