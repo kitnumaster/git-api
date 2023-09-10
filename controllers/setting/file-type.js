@@ -10,8 +10,10 @@ const CreateFileType = (req, res, next) => {
     }
 
     const fileTypeName = req.body.fileTypeName
+    const fileTypeNameTH = req.body.fileTypeNameTH
     const fileType = new FileType({
         fileTypeName: fileTypeName,
+        fileTypeNameTH: fileTypeNameTH,
     })
     fileType
         .save()
@@ -75,6 +77,7 @@ const UpdateFileType = (req, res, next) => {
     }
 
     const fileTypeName = req.body.fileTypeName
+    const fileTypeNameTH = req.body.fileTypeNameTH
     const active = req.body.active
     FileType.findById(fileTypeId)
         .then(fileType => {
@@ -84,6 +87,7 @@ const UpdateFileType = (req, res, next) => {
                 throw error;
             }
             fileType.fileTypeName = fileTypeName
+            fileType.fileTypeNameTH = fileTypeNameTH
             fileType.active = active
             return fileType.save()
         })

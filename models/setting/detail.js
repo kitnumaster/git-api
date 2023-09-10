@@ -8,6 +8,11 @@ const DetailSchema = new Schema(
             required: true,
             index: true,
         },
+        detailNameTH: {
+            type: String,
+            required: true,
+            index: true,
+        },
         active: {
             type: Boolean,
             required: true,

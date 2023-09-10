@@ -10,8 +10,10 @@ const CreateMaterial = (req, res, next) => {
     }
 
     const materialName = req.body.materialName
+    const materialNameTH = req.body.materialNameTH
     const material = new Material({
         materialName: materialName,
+        materialNameTH: materialNameTH,
     })
     material
         .save()
@@ -75,6 +77,7 @@ const UpdateMaterial = (req, res, next) => {
     }
 
     const materialName = req.body.materialName
+    const materialNameTH = req.body.materialNameTH
     const active = req.body.active
     Material.findById(materialId)
         .then(material => {
@@ -84,6 +87,7 @@ const UpdateMaterial = (req, res, next) => {
                 throw error;
             }
             material.materialName = materialName
+            material.materialNameTH = materialNameTH
             material.active = active
             return material.save()
         })

@@ -10,8 +10,10 @@ const CreateDesignerLevel = (req, res, next) => {
     }
 
     const designerLevelName = req.body.designerLevelName
+    const designerLevelNameTH = req.body.designerLevelNameTH
     const designerLevel = new DesignerLevel({
         designerLevelName: designerLevelName,
+        designerLevelNameTH: designerLevelNameTH,
     })
     designerLevel
         .save()
@@ -75,6 +77,7 @@ const UpdateDesignerLevel = (req, res, next) => {
     }
 
     const designerLevelName = req.body.designerLevelName
+    const designerLevelNameTH = req.body.designerLevelNameTH
     const active = req.body.active
     DesignerLevel.findById(designerLevelId)
         .then(designerLevel => {
@@ -84,6 +87,7 @@ const UpdateDesignerLevel = (req, res, next) => {
                 throw error;
             }
             designerLevel.designerLevelName = designerLevelName
+            designerLevel.designerLevelNameTH = designerLevelNameTH
             designerLevel.active = active
             return designerLevel.save()
         })

@@ -12,6 +12,18 @@ const productSchema = new Schema(
             type: String,
             index: true
         },
+        productNameTH: {
+            type: String,
+            index: true
+        },
+        producDetail: {
+            type: String,
+            index: true
+        },
+        producDetailTH: {
+            type: String,
+            index: true
+        },
         material: [{
             type: Schema.Types.ObjectId,
             index: true,

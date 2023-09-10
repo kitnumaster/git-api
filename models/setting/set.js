@@ -8,6 +8,11 @@ const SetSchema = new Schema(
             required: true,
             index: true,
         },
+        setNameTH: {
+            type: String,
+            required: true,
+            index: true,
+        },
         active: {
             type: Boolean,
             required: true,

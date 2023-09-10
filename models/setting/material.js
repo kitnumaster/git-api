@@ -8,6 +8,11 @@ const MaterialSchema = new Schema(
             required: true,
             index: true,
         },
+        materialNameTH: {
+            type: String,
+            required: true,
+            index: true,
+        },
         active: {
             type: Boolean,
             required: true,

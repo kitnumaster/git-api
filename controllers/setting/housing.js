@@ -10,8 +10,10 @@ const CreateHousing = (req, res, next) => {
     }
 
     const housingName = req.body.housingName
+    const housingNameTH = req.body.housingNameTH
     const housing = new Housing({
         housingName: housingName,
+        housingNameTH: housingNameTH,
     })
     housing
         .save()
@@ -75,6 +77,7 @@ const UpdateHousing = (req, res, next) => {
     }
 
     const housingName = req.body.housingName
+    const housingNameTH = req.body.housingNameTH
     const active = req.body.active
     Housing.findById(housingId)
         .then(housing => {
@@ -84,6 +87,7 @@ const UpdateHousing = (req, res, next) => {
                 throw error;
             }
             housing.housingName = housingName
+            housing.housingNameTH = housingNameTH
             housing.active = active
             return housing.save()
         })

@@ -8,6 +8,11 @@ const TrendSchema = new Schema(
             required: true,
             index: true,
         },
+        trendNameTH: {
+            type: String,
+            required: true,
+            index: true,
+        },
         active: {
             type: Boolean,
             required: true,

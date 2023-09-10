@@ -10,8 +10,10 @@ const CreateTrend = (req, res, next) => {
     }
 
     const trendName = req.body.trendName
+    const trendNameTH = req.body.trendNameTH
     const trend = new Trend({
         trendName: trendName,
+        trendNameTH: trendNameTH,
     })
     trend
         .save()
@@ -75,6 +77,7 @@ const UpdateTrend = (req, res, next) => {
     }
 
     const trendName = req.body.trendName
+    const trendNameTH = req.body.trendNameTH
     const active = req.body.active
     Trend.findById(trendId)
         .then(trend => {
@@ -84,6 +87,7 @@ const UpdateTrend = (req, res, next) => {
                 throw error;
             }
             trend.trendName = trendName
+            trend.trendNameTH = trendNameTH
             trend.active = active
             return trend.save()
         })

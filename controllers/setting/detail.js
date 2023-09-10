@@ -10,8 +10,10 @@ const CreateDetail = (req, res, next) => {
     }
 
     const detailName = req.body.detailName
+    const detailNameTH = req.body.detailNameTH
     const detail = new Detail({
         detailName: detailName,
+        detailNameTH: detailNameTH,
     })
     detail
         .save()

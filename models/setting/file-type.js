@@ -8,6 +8,11 @@ const FileTypeSchema = new Schema(
             required: true,
             index: true,
         },
+        fileTypeNameTH: {
+            type: String,
+            required: true,
+            index: true,
+        },
         active: {
             type: Boolean,
             required: true,

@@ -8,6 +8,11 @@ const HousingSchema = new Schema(
             required: true,
             index: true,
         },
+        housingNameTH: {
+            type: String,
+            required: true,
+            index: true,
+        },
         active: {
             type: Boolean,
             required: true,

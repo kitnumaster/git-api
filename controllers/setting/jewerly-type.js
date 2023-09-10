@@ -10,8 +10,10 @@ const CreateJewerlyType = (req, res, next) => {
     }
 
     const jewerlyTypeName = req.body.jewerlyTypeName
+    const jewerlyTypeNameTH = req.body.jewerlyTypeNameTH
     const jewerlyType = new JewerlyType({
         jewerlyTypeName: jewerlyTypeName,
+        jewerlyTypeNameTH: jewerlyTypeNameTH,
     })
     jewerlyType
         .save()
@@ -75,6 +77,7 @@ const UpdateJewerlyType = (req, res, next) => {
     }
 
     const jewerlyTypeName = req.body.jewerlyTypeName
+    const jewerlyTypeNameTH = req.body.jewerlyTypeNameTH
     const active = req.body.active
     JewerlyType.findById(jewerlyTypeId)
         .then(jewerlyType => {
@@ -84,6 +87,7 @@ const UpdateJewerlyType = (req, res, next) => {
                 throw error;
             }
             jewerlyType.jewerlyTypeName = jewerlyTypeName
+            jewerlyType.jewerlyTypeNameTH = jewerlyTypeNameTH
             jewerlyType.active = active
             return jewerlyType.save()
         })

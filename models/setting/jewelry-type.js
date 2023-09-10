@@ -8,6 +8,11 @@ const JewerlyTypeSchema = new Schema(
             required: true,
             index: true,
         },
+        jewerlyTypeNameTH: {
+            type: String,
+            required: true,
+            index: true,
+        },
         active: {
             type: Boolean,
             required: true,

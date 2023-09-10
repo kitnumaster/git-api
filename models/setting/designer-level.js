@@ -8,6 +8,11 @@ const DesignerLevelSchema = new Schema(
             required: true,
             index: true,
         },
+        designerLevelNameTH: {
+            type: String,
+            required: true,
+            index: true,
+        },
         active: {
             type: Boolean,
             required: true,

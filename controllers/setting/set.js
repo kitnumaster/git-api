@@ -10,8 +10,10 @@ const CreateSet = (req, res, next) => {
     }
 
     const setName = req.body.setName
+    const setNameTH = req.body.setNameTH
     const set = new Set({
         setName: setName,
+        setNameTH: setNameTH,
     })
     set
         .save()
@@ -75,6 +77,7 @@ const UpdateSet = (req, res, next) => {
     }
 
     const setName = req.body.setName
+    const setNameTH = req.body.setNameTH
     const active = req.body.active
     Set.findById(setId)
         .then(set => {
@@ -84,6 +87,7 @@ const UpdateSet = (req, res, next) => {
                 throw error;
             }
             set.setName = setName
+            set.setNameTH = setNameTH
             set.active = active
             return set.save()
         })
