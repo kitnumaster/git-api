@@ -76,7 +76,7 @@ const UpdateAccount = (req, res, next) => {
                 throw error;
             }
 
-            console.log(update)
+            // console.log(update)
 
             return Account.findByIdAndUpdate(accountId, update, { new: true })
         })
