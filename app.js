@@ -14,7 +14,6 @@ const designerLevelRoutes = require('./routes/setting/designer-level')
 const detailRoutes = require('./routes/setting/detail')
 const fileTypeRoutes = require('./routes/setting/file-type')
 const setRoutes = require('./routes/setting/set')
-const inMemoryStorage = multer.memoryStorage()
 const uploadRoute = require('./routes/upload')
 const accountRoutes = require('./routes/account')
 const productRoutes = require('./routes/product')
@@ -23,10 +22,10 @@ const app = express();
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'images');
+    cb(null, 'temp');
   },
   filename: (req, file, cb) => {
-    cb(null, new Date().toISOString() + '-' + file.originalname)
+    cb(null, new Date().toISOString() + '-' + file.originalname);
   }
 });
 
@@ -34,8 +33,7 @@ const fileFilter = (req, file, cb) => {
   if (
     file.mimetype === 'image/png' ||
     file.mimetype === 'image/jpg' ||
-    file.mimetype === 'image/jpeg' ||
-    file.mimetype === 'application/pdf'
+    file.mimetype === 'image/jpeg'
   ) {
     cb(null, true);
   } else {
@@ -46,9 +44,9 @@ const fileFilter = (req, file, cb) => {
 // app.use(bodyParser.urlencoded()); // x-www-form-urlencoded <form>
 app.use(bodyParser.json()); // application/json
 app.use(
-  multer({ storage: inMemoryStorage, fileFilter: fileFilter }).single('image')
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single('file')
 );
-// app.use('/images', express.static(path.join(__dirname, 'images')))
+app.use('/temp', express.static(path.join(__dirname, 'temp')));
 
 // console.log(req)
 app.use((req, res, next) => {
@@ -66,7 +64,7 @@ app.use('/setting', jewerlyTypeRoutes, materialRoutes
   , housingRoutes, trendRoutes
   , designerLevelRoutes, detailRoutes
   , fileTypeRoutes, setRoutes)
-app.use('/', accountRoutes, productRoutes)
+app.use('/', uploadRoute, accountRoutes, productRoutes)
 
 app.use((error, req, res, next) => {
   console.log(error);

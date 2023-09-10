@@ -2,11 +2,11 @@ const express = require('express');
 const isAuth = require('../middleware/is-auth');
 const router = express.Router();
 
-// create
 router.post(
     '/upload',
     (req, res, next) => {
 
+        console.log(req)
         if (!req.file) {
             const error = new Error('No image provided.');
             error.statusCode = 422;
