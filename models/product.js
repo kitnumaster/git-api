@@ -66,9 +66,12 @@ const productSchema = new Schema(
         files: [{
             type: String,
         }],
+        discount: {
+            type: Number,
+            default: 0.00
+        },
         price: {
             type: Number,
-            index: true
         },
         active: {
             type: Boolean,

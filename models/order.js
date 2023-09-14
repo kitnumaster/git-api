@@ -17,8 +17,11 @@ const orderSchema = new Schema(
             type: Number,
             index: true
         },
+        paymentMethod: {
+            type: Number,//1 QR, 2 credit
+        },
         paymentStatus: {
-            type: Number,
+            type: Number,//1 รอหลักฐาน 2 แนบหลักฐานรอยื่ยัน 3 ยืนยัน 4 reject 5 cancel
             index: true
         },
         paymentDetail: [{
