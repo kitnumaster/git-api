@@ -7,6 +7,7 @@ const multer = require('multer')
 
 const authRoutes = require('./routes/auth')
 const jewerlyTypeRoutes = require('./routes/setting/jewerly-type')
+const roleRoutes = require('./routes/setting/role')
 const materialRoutes = require('./routes/setting/material')
 const housingRoutes = require('./routes/setting/housing')
 const trendRoutes = require('./routes/setting/trend')
@@ -66,7 +67,7 @@ app.use('/auth', authRoutes)
 app.use('/setting', jewerlyTypeRoutes, materialRoutes
   , housingRoutes, trendRoutes
   , designerLevelRoutes, detailRoutes
-  , fileTypeRoutes, setRoutes)
+  , fileTypeRoutes, setRoutes, roleRoutes)
 app.use('/', uploadRoute, accountRoutes, productRoutes, cartRoutes, orderRoutes)
 
 app.use((error, req, res, next) => {

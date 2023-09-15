@@ -16,6 +16,13 @@ const userSchema = new Schema(
       type: String,
       required: true
     },
+    phone: {
+      type: String,
+    },
+    role: {
+      type: Schema.Types.ObjectId,
+      ref: "Role"
+    },
     userType: {
       type: Number, //1 admin, 2,designer, 3 customer
       require: true

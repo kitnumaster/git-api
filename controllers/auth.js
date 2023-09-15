@@ -16,13 +16,17 @@ exports.signup = (req, res, next) => {
   const email = req.body.email;
   const name = req.body.name;
   const password = req.body.password;
+  const phone = req.body.phone;
+  const role = req.body.role;
   bcrypt
     .hash(password, 12)
     .then(hashedPw => {
       const user = new User({
         email: email,
         password: hashedPw,
-        name: name
+        name: name,
+        phone: phone,
+        role: role
       });
       return user.save();
     })
@@ -78,14 +82,23 @@ exports.login = (req, res, next) => {
 };
 
 exports.CurrentUser = (req, res, next) => {
-  console.log(req)
-  res.status(200).json({
-    message: {
-      userId: req.userId,
-      email: req.email,
-      name: req.name
-    }
-  })
+  const userId = req.userId
+  User.findById(userId)
+    .populate("role")
+    .then(user => {
+      if (!user) {
+        const error = new Error('Could not find.');
+        error.statusCode = 404;
+        throw error;
+      }
+      res.status(200).json({ message: 'fetched.', user: user })
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500
+      }
+      next(err)
+    })
 }
 
 exports.AccountSignup = (req, res, next) => {
@@ -158,3 +171,107 @@ exports.AccountLogin = (req, res, next) => {
       next(err);
     });
 };
+
+exports.GetAdmins = (req, res, next) => {
+
+  if (req.userType == 'admin') {
+    User.find({})
+      .then(details => {
+        res.status(200).json({
+          message: 'Fetched successfully.',
+          details: details,
+        });
+      })
+      .catch(err => {
+        if (!err.statusCode) {
+          err.statusCode = 500
+        } f
+        next(err)
+      })
+  } else {
+    const error = new Error('Permission denied.');
+    error.statusCode = 403;
+    throw error;
+  }
+}
+
+exports.UpdatePassword = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error('Validation failed.');
+    error.statusCode = 422;
+    error.data = errors.array();
+    throw error;
+  }
+  const oldPassword = req.body.oldPassword;
+  const newPassword = req.body.newPassword;
+  const userId = req.params.userId
+  // console.log({ _id: userId })
+  let loadedUser;
+  User.findOne({ _id: userId })
+    .then(user => {
+      if (!user) {
+        const error = new Error('A user could not be found.');
+        error.statusCode = 401;
+        throw error;
+      }
+      // console.log(oldPassword)
+      loadedUser = user;
+      return bcrypt.compare(oldPassword, user.password);
+    })
+    .then(isEqual => {
+      if (!isEqual) {
+        const error = new Error('Wrong password!');
+        error.statusCode = 401;
+        throw error;
+      }
+      // console.log("a")
+      bcrypt
+        .hash(newPassword, 12)
+        .then(hashedPw => {
+
+          loadedUser.password = hashedPw
+          return loadedUser.save();
+        })
+    })
+    .then(result => {
+      res.status(200).json({ message: 'Updated!' })
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
+exports.UpdateAdmin = (req, res, next) => {
+  const userId = req.params.userId;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error('Validation failed, entered data is incorrect.');
+    error.statusCode = 422;
+    throw error;
+  }
+
+  const update = req.body
+  // console.log(update)
+  User.findById(userId)
+    .then(user => {
+      if (!user) {
+        const error = new Error('Could not find.');
+        error.statusCode = 404;
+        throw error;
+      }
+      return User.findByIdAndUpdate(userId, update, { new: true })
+    })
+    .then(result => {
+      res.status(200).json({ message: 'Updated!', role: result })
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500
+      }
+      next(err);
+    })
+}

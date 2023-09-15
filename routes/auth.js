@@ -34,6 +34,16 @@ router.put(
 
 router.post('/login', authController.login)
 router.get('/current-user', isAuth, authController.CurrentUser);
+router.get('/admins', isAuth, authController.GetAdmins);
+router.put('/admin/:userId', isAuth, authController.UpdateAdmin);
+router.put('/edit-password/:userId', [
+  body('oldPassword')
+    .trim()
+    .isLength({ min: 5 }),
+  body('newPassword')
+    .trim()
+    .isLength({ min: 5 }),
+], isAuth, authController.UpdatePassword);
 
 router.put(
   '/account/signup',
