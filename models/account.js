@@ -27,7 +27,7 @@ const accountSchema = new Schema(
     },
     password: {
       type: String,
-      required: true
+      // required: true
     },
     firstName: {
       type: String,

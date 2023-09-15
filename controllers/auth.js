@@ -101,6 +101,25 @@ exports.CurrentUser = (req, res, next) => {
     })
 }
 
+exports.AccountCurrentUser = (req, res, next) => {
+  const userId = req.userId
+  Account.findById(userId)
+    .then(account => {
+      if (!account) {
+        const error = new Error('Could not find.');
+        error.statusCode = 404;
+        throw error;
+      }
+      res.status(200).json({ message: 'fetched.', account: account })
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500
+      }
+      next(err)
+    })
+}
+
 exports.AccountSignup = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -274,4 +293,70 @@ exports.UpdateAdmin = (req, res, next) => {
       }
       next(err);
     })
+}
+
+exports.AccountUpdatePassword = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error('Validation failed.');
+    error.statusCode = 422;
+    error.data = errors.array();
+    throw error;
+  }
+  const oldPassword = req.body.oldPassword;
+  const newPassword = req.body.newPassword;
+  const accountId = req.params.accountId
+  // console.log({ _id: userId })
+  let loadedUser;
+  Account.findOne({ _id: accountId })
+    .then(account => {
+      if (!account) {
+        const error = new Error('A user could not be found.');
+        error.statusCode = 401;
+        throw error;
+      }
+      // console.log(oldPassword)
+      loadedUser = account;
+      return bcrypt.compare(oldPassword, account.password);
+    })
+    .then(isEqual => {
+      if (!isEqual) {
+        const error = new Error('Wrong password!');
+        error.statusCode = 401;
+        throw error;
+      }
+      // console.log("a")
+      bcrypt
+        .hash(newPassword, 12)
+        .then(hashedPw => {
+
+          loadedUser.password = hashedPw
+          return loadedUser.save();
+        })
+    })
+    .then(result => {
+      res.status(200).json({ message: 'Updated!' })
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
+exports.SetToken = (loadedUser) => {
+
+  const token = jwt.sign(
+    {
+      email: loadedUser.email,
+      userId: loadedUser._id.toString(),
+      userType: loadedUser.userType
+    },
+    'NLd0tmV6hw',
+    { expiresIn: '24h' }
+  );
+
+  return token
+
 }

@@ -75,5 +75,14 @@ router.put(
 );
 
 router.post('/account/login', authController.AccountLogin)
+router.get('/account/current-user', isAuth, authController.AccountCurrentUser);
+router.put('/account/edit-password/:accountId', [
+  body('oldPassword')
+    .trim()
+    .isLength({ min: 5 }),
+  body('newPassword')
+    .trim()
+    .isLength({ min: 5 }),
+], isAuth, authController.AccountUpdatePassword);
 
 module.exports = router;

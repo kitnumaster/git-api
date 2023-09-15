@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const multer = require('multer')
 
 const authRoutes = require('./routes/auth')
+const socialAuthRoutes = require('./routes/social-auth')
 const jewerlyTypeRoutes = require('./routes/setting/jewerly-type')
 const roleRoutes = require('./routes/setting/role')
 const materialRoutes = require('./routes/setting/material')
@@ -63,7 +64,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/auth', authRoutes)
+app.use('/auth', authRoutes, socialAuthRoutes)
 app.use('/setting', jewerlyTypeRoutes, materialRoutes
   , housingRoutes, trendRoutes
   , designerLevelRoutes, detailRoutes
