@@ -16,6 +16,9 @@ const productSchema = new Schema(
             type: String,
             index: true
         },
+        productCover: {
+            type: String
+        },
         producDetail: {
             type: String,
             index: true
@@ -63,8 +66,16 @@ const productSchema = new Schema(
             index: true,
             ref: 'Set'
         },
-        files: [{
+        otherFiles: [{
             type: String,
+        }],
+        files: [{
+            fileType: {
+                type: String,
+            },
+            filePath: {
+                type: String
+            }
         }],
         discount: {
             type: Number,

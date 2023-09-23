@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 exports.moveFile = (file, dir2) => {
-
+    console.log(file)
     if (!fs.existsSync(dir2)) {
         fs.mkdirSync(dir2, { recursive: true });
     }

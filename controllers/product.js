@@ -14,14 +14,32 @@ const CreateProduct = (req, res, next) => {
             throw error;
         }
         req.body.account = accountId
+        if (req.body.productCover) {
+            let newPath = `files/${accountId}`
+            let newFile = moveFile('./' + req.body.productCover, `./${newPath}`)
 
+            req.body.productCover = `files/${newFile}`
+        }
+        if (req.body.otherFiles) {
+            let move = []
+            for (let i of req.body.otherFiles) {
+
+                let newPath = `files/${accountId}`
+                let newFile = moveFile('./' + i, `./${newPath}`)
+                move.push(`files/${newFile}`)
+            }
+            req.body.otherFiles = move
+        }
         if (req.body.files) {
             let move = []
             for (let i of req.body.files) {
 
                 let newPath = `files/${accountId}`
-                let newFile = moveFile('./' + i, `./${newPath}`)
-                move.push(`files/${newFile}`)
+                let newFile = moveFile('./' + i.filePath, `./${newPath}`)
+                move.push({
+                    fileType: i.fileType,
+                    filePath: `files/${newFile}`
+                })
             }
             req.body.files = move
         }
@@ -57,7 +75,7 @@ const GetProducts = (req, res, next) => {
         query.account = req.userId
     }
     const currentPage = req.query.page || 1;
-    const perPage = 2;
+    const perPage = 30;
     let totalItems;
     Product.find(query)
         .countDocuments()
@@ -154,14 +172,32 @@ const UpdateProduct = (req, res, next) => {
             error.statusCode = 422;
             throw error;
         }
+        if (req.body.productCover) {
+            let newPath = `files/${accountId}`
+            let newFile = moveFile('./' + req.body.productCover, `./${newPath}`)
 
+            req.body.productCover = `files/${newFile}`
+        }
+        if (req.body.otherFiles) {
+            let move = []
+            for (let i of req.body.otherFiles) {
+
+                let newPath = `files/${accountId}`
+                let newFile = moveFile('./' + i, `./${newPath}`)
+                move.push(`files/${newFile}`)
+            }
+            req.body.otherFiles = move
+        }
         if (req.body.update.files) {
             let move = []
             for (let i of req.body.update.files) {
 
                 let newPath = `files/${accountId}`
-                let newFile = moveFile('./' + i, `./${newPath}`)
-                move.push(`files/${newFile}`)
+                let newFile = moveFile('./' + i.fileType, `./${newPath}`)
+                move.push({
+                    fileType: i.fileType,
+                    filePath: `files/${newFile}`
+                })
             }
             req.body.update.files = move
         }
