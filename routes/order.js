@@ -7,6 +7,8 @@ const {
     CreateOrder,
     GetOrders,
     DeleteOrder,
+    GetOrder,
+    UpdateOrder,
 } = require('../controllers/order')
 
 
@@ -18,7 +20,10 @@ router.post(
 )
 router.get('/orders', isAuth, GetOrders)
 router.get('/my-orders', isAuth, GetOrders)
-router.delete('/order/:productId', isAuth,
+router.get('/orders', isAuth, GetOrders)
+router.get('/order/:orderId', isAuth, GetOrder)
+router.put('/order/:orderId', isAuth, UpdateOrder)
+router.delete('/order/:orderId', isAuth,
     DeleteOrder)
 
 module.exports = router

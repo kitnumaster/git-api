@@ -90,7 +90,10 @@ const CreateOrder = async (req, res, next) => {
 const GetOrders = (req, res, next) => {
 
     let query = {}
-    query.account = req.userId
+    if (req.userType != "admin") {
+        query.account = req.userId
+    }
+
     // console.log(query)
     const currentPage = req.query.page || 1;
     const perPage = 2;
@@ -119,10 +122,34 @@ const GetOrders = (req, res, next) => {
         })
 }
 
+const GetOrder = (req, res, next) => {
+
+    const orderId = req.params.orderId
+    // if (req.userType != "admin") {
+    //     query.account = req.userId
+    // }
+    Order.findById(orderId)
+        .populate("paymentDetail.product")
+        .then(order => {
+            if (!order) {
+                const error = new Error('Could not find.');
+                error.statusCode = 404;
+                throw error;
+            }
+            res.status(200).json({ message: 'fetched.', order: order })
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500
+            }
+            next(err)
+        })
+}
+
 const DeleteOrder = (req, res, next) => {
-    const productId = req.params.productId
+    const orderId = req.params.orderId
     let query = {
-        product: productId
+        _id: orderId
     }
     if (req.userType && req.userType != 'admin') {
         query.account = req.userId
@@ -149,8 +176,41 @@ const DeleteOrder = (req, res, next) => {
         });
 }
 
+const UpdateOrder = (req, res, next) => {
+    const orderId = req.params.orderId;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const error = new Error('Validation failed, entered data is incorrect.');
+        error.statusCode = 422;
+        throw error;
+    }
+
+    const update = req.body.update
+    Order.findById(orderId)
+        .then(order => {
+            if (!order) {
+                const error = new Error('Could not find.');
+                error.statusCode = 404;
+                throw error;
+            }
+
+            return Order.findByIdAndUpdate(orderId, update, { new: true })
+        })
+        .then(result => {
+            res.status(200).json({ message: 'Updated!', product: result })
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500
+            }
+            next(err);
+        })
+}
+
 module.exports = {
     CreateOrder,
     GetOrders,
     DeleteOrder,
+    GetOrder,
+    UpdateOrder,
 }
