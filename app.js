@@ -53,6 +53,7 @@ app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single('file')
 );
 app.use('/temp', express.static(path.join(__dirname, 'temp')));
+app.use('/files', express.static(path.join(__dirname, 'files')));
 
 // console.log(req)
 app.use((req, res, next) => {

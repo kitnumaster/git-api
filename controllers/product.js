@@ -18,7 +18,7 @@ const CreateProduct = (req, res, next) => {
             let newPath = `files/${accountId}`
             let newFile = moveFile('./' + req.body.productCover, `./${newPath}`)
 
-            req.body.productCover = `files/${newFile}`
+            req.body.productCover = `${newPath}/${newFile}`
         }
         if (req.body.otherFiles) {
             let move = []
@@ -26,7 +26,7 @@ const CreateProduct = (req, res, next) => {
 
                 let newPath = `files/${accountId}`
                 let newFile = moveFile('./' + i, `./${newPath}`)
-                move.push(`files/${newFile}`)
+                move.push(`${newPath}/${newFile}`)
             }
             req.body.otherFiles = move
         }
@@ -38,7 +38,7 @@ const CreateProduct = (req, res, next) => {
                 let newFile = moveFile('./' + i.filePath, `./${newPath}`)
                 move.push({
                     fileType: i.fileType,
-                    filePath: `files/${newFile}`
+                    filePath: `${newPath}/${newFile}`
                 })
             }
             req.body.files = move
@@ -176,7 +176,7 @@ const UpdateProduct = (req, res, next) => {
             let newPath = `files/${accountId}`
             let newFile = moveFile('./' + req.body.productCover, `./${newPath}`)
 
-            req.body.productCover = `files/${newFile}`
+            req.body.productCover = `${newPath}/${newFile}`
         }
         if (req.body.otherFiles) {
             let move = []
@@ -184,7 +184,7 @@ const UpdateProduct = (req, res, next) => {
 
                 let newPath = `files/${accountId}`
                 let newFile = moveFile('./' + i, `./${newPath}`)
-                move.push(`files/${newFile}`)
+                move.push(`${newPath}/${newFile}`)
             }
             req.body.otherFiles = move
         }
@@ -196,7 +196,7 @@ const UpdateProduct = (req, res, next) => {
                 let newFile = moveFile('./' + i.fileType, `./${newPath}`)
                 move.push({
                     fileType: i.fileType,
-                    filePath: `files/${newFile}`
+                    filePath: `${newPath}/${newFile}`
                 })
             }
             req.body.update.files = move
@@ -204,7 +204,7 @@ const UpdateProduct = (req, res, next) => {
 
         const update = req.body.update
 
-
+        // console.log(update)
         Product.findById(productId)
             .then(product => {
                 if (!product) {
