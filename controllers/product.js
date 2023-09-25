@@ -82,6 +82,7 @@ const GetProducts = (req, res, next) => {
         .then(count => {
             totalItems = count;
             return Product.find(query)
+                .populate("account")
                 .populate("material", {
                     materialName: 1,
                 })
@@ -124,6 +125,7 @@ const GetProducts = (req, res, next) => {
 const GetProduct = (req, res, next) => {
     const productId = req.params.productId
     Product.findById(productId)
+        .populate("account")
         .populate("material", {
             materialName: 1,
         })

@@ -3,6 +3,14 @@ const Order = require('../models/order')
 const Product = require('../models/product')
 const Big = require('big.js');
 
+const zeroFill = (number, width) => {
+    width -= number.toString().length;
+    if (width > 0) {
+        return new Array(width + (/\./.test(number) ? 2 : 1)).join('0') + number;
+    }
+    return number + ""; // always return a string
+};
+
 const buildOrder = async (productId, promotionCode) => {
 
     const product = await Product.find({
@@ -65,6 +73,15 @@ const CreateOrder = async (req, res, next) => {
         //     message: 'Created successfully!',
         //     product: productDetail
         // });
+        let orderNumber = 1
+        const getNumber = await Order.findOne({})
+            .sort({ createAt: -1 })
+        if (getNumber) {
+            orderNumber = getNumber.orderNumber + 1
+        }
+
+        body.orderNumber = zeroFill(orderNumber, 4)
+
         const order = new Order(body)
         order
             .save()
@@ -103,6 +120,7 @@ const GetOrders = (req, res, next) => {
         .then(count => {
             totalItems = count;
             return Order.find(query)
+                .populate("account")
                 .populate("paymentDetail.product")
                 .skip((currentPage - 1) * perPage)
                 .limit(perPage);
@@ -110,7 +128,12 @@ const GetOrders = (req, res, next) => {
         .then(orders => {
             res.status(200).json({
                 message: 'Fetched successfully.',
-                products: orders,
+                orders: orders.map(i => {
+                    return {
+                        ...i._doc,
+                        orderNumber: `OD-${i.orderNumber}`
+                    }
+                }),
                 totalItems: totalItems,
             });
         })
@@ -129,6 +152,7 @@ const GetOrder = (req, res, next) => {
     //     query.account = req.userId
     // }
     Order.findById(orderId)
+        .populate("account")
         .populate("paymentDetail.product")
         .then(order => {
             if (!order) {
@@ -136,7 +160,12 @@ const GetOrder = (req, res, next) => {
                 error.statusCode = 404;
                 throw error;
             }
-            res.status(200).json({ message: 'fetched.', order: order })
+            res.status(200).json({
+                message: 'fetched.', order: {
+                    ...order._doc,
+                    orderNumber: `OD-${order.orderNumber}`
+                }
+            })
         })
         .catch(err => {
             if (!err.statusCode) {
