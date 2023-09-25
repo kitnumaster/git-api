@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator/check')
 const Order = require('../models/order')
+const OrderProduct = require('../models/orderProduct')
 const Product = require('../models/product')
 const Big = require('big.js');
 
@@ -85,7 +86,20 @@ const CreateOrder = async (req, res, next) => {
         const order = new Order(body)
         order
             .save()
-            .then(result => {
+            .then(async result => {
+
+                for (let i of order.paymentDetail) {
+                    let orderP = new OrderProduct({
+                        product: i.product,
+                        price: i.price,
+                        discount: i.discount,
+                        total: i.total,
+                        order: order._id,
+                        paymentStatus: 1
+                    })
+                    await orderP.save()
+                }
+
                 res.status(201).json({
                     message: 'Created successfully!',
                     product: order
