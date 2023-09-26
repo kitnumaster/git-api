@@ -165,7 +165,7 @@ const GetProduct = (req, res, next) => {
 
 const UpdateProduct = (req, res, next) => {
 
-    if (req.userType == 2) {
+    if (req.userType != 1) {
         let accountId = req.userId
         const productId = req.params.productId;
         const errors = validationResult(req);
@@ -216,7 +216,7 @@ const UpdateProduct = (req, res, next) => {
                 }
                 console.log(accountId)
                 console.log(product.account.toString())
-                if (accountId !== product.account.toString()) {
+                if (req.userType == 2 && accountId !== product.account.toString()) {
                     const error = new Error('Permission denied.');
                     error.statusCode = 403;
                     throw error;

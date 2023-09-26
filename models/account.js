@@ -69,6 +69,12 @@ const accountSchema = new Schema(
     companyAddress: {
       type: String
     },
+    bankName: {
+      type: String
+    },
+    bankAccountName: {
+      type: String
+    },
     bankAccount: {
       type: String
     },
