@@ -78,7 +78,7 @@ const CreateOrder = async (req, res, next) => {
         const getNumber = await Order.findOne({})
             .sort({ createAt: -1 })
         if (getNumber) {
-            orderNumber = getNumber.orderNumber + 1
+            orderNumber = parseInt(getNumber.orderNumber) + 1
         }
 
         body.orderNumber = zeroFill(orderNumber, 4)
@@ -230,11 +230,24 @@ const UpdateOrder = (req, res, next) => {
 
     const update = req.body.update
     Order.findById(orderId)
-        .then(order => {
+        .then(async order => {
             if (!order) {
                 const error = new Error('Could not find.');
                 error.statusCode = 404;
                 throw error;
+            }
+
+            if (update.paymentStatus && update.paymentStatus == 3) {
+                let paymentCompleteDate = Date.now()
+                update.paymentCompleteDate = paymentCompleteDate
+                let a = await OrderProduct.updateMany(
+                    {
+                        order: orderId
+                    }, {
+                    orderStatus: 2,
+                    orderCompletetDate: paymentCompleteDate
+                })
+                console.log(a)
             }
 
             return Order.findByIdAndUpdate(orderId, update, { new: true })

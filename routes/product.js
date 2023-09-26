@@ -8,6 +8,8 @@ const {
     GetProducts,
     GetProduct,
     UpdateProduct,
+    GetProductSummaries,
+    UpdateProductSummaries,
 } = require('../controllers/product')
 
 
@@ -24,5 +26,8 @@ router.put('/my-product/:productId', isAuth,
     UpdateProduct)
 router.put('/product/:productId', isAuth,
     UpdateProduct)
+router.get('/product-summaries', GetProductSummaries)
+router.put('/product-summaries/:productSummaryId', isAuth,
+    UpdateProductSummaries)
 
 module.exports = router

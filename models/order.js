@@ -24,6 +24,9 @@ const orderSchema = new Schema(
             type: Number,//1 รอหลักฐาน 2 แนบหลักฐานรอยื่ยัน 3 ยืนยัน 4 reject 5 cancel
             index: true
         },
+        paymentCompleteDate: {
+            type: Date
+        },
         paymentSlip: [{
             type: String,
         }],
