@@ -22,5 +22,7 @@ router.get('/my-products', isAuth, GetProducts)
 router.get('/product/:productId', GetProduct)
 router.put('/my-product/:productId', isAuth,
     UpdateProduct)
+router.put('/product/:productId', isAuth,
+    UpdateProduct)
 
 module.exports = router
