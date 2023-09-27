@@ -40,6 +40,12 @@ const productSummarySchema = new Schema(
             type: Date,
             index: true
         },
+        paymentTranferPrice: {
+            type: String,
+        },
+        paymentTranferSlip: [{
+            type: String,
+        }],
         summaryMonth: {
             type: String,
             index: true

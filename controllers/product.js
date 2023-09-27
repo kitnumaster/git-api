@@ -269,8 +269,8 @@ const UpdateProductSummaries = (req, res, next) => {
                 }
 
                 if (update.paymentStatus && update.paymentStatus == 2) {
-                    let paymentTranferDate = Date.now()
-                    update.paymentTranferDate = paymentTranferDate
+                //     let paymentTranferDate = Date.now()
+                //     update.paymentTranferDate = paymentTranferDate
 
                 }
 
