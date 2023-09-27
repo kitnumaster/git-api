@@ -261,7 +261,7 @@ const UpdateProductSummaries = (req, res, next) => {
 
         // console.log(update)
         ProductSummaries.findById(productSummaryId)
-            .then(product => {
+            .then(async product => {
                 if (!product) {
                     const error = new Error('Could not find.');
                     error.statusCode = 404;
@@ -269,9 +269,13 @@ const UpdateProductSummaries = (req, res, next) => {
                 }
 
                 if (update.paymentStatus && update.paymentStatus == 2) {
-                //     let paymentTranferDate = Date.now()
-                //     update.paymentTranferDate = paymentTranferDate
-
+                    //     let paymentTranferDate = Date.now()
+                    //     update.paymentTranferDate = paymentTranferDate
+                    await OrderProduct.updateMany({
+                        order: { $in: product.order }
+                    }, {
+                        paymentStatus: 2
+                    })
                 }
 
                 return ProductSummaries.findByIdAndUpdate(productSummaryId, update, { new: true })

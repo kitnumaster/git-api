@@ -3,6 +3,11 @@ const Schema = mongoose.Schema;
 
 const orderProductSchema = new Schema(
     {
+        account: {
+            type: Schema.Types.ObjectId,
+            index: true,
+            ref: "Account"
+        },
         product: {
             type: Schema.Types.ObjectId,
             index: true,

@@ -27,6 +27,7 @@ const buildOrder = async (productId, promotionCode) => {
 
         let price = new Big(i.price)
         paymentDetail.push({
+            account: i.account,
             product: i._id,
             price: i.price,
             discount: i.discount,
@@ -68,7 +69,7 @@ const CreateOrder = async (req, res, next) => {
         body.paymentDetail = productDetail.paymentDetail
         body.totalDiscount = productDetail.totalDiscount.toFixed(2)
         body.totalPrice = productDetail.totalPrice.toFixed(2)
-        // console.log(body)
+        console.log(body)
 
         // res.status(201).json({
         //     message: 'Created successfully!',
@@ -90,6 +91,7 @@ const CreateOrder = async (req, res, next) => {
 
                 for (let i of order.paymentDetail) {
                     let orderP = new OrderProduct({
+                        account: i.account,
                         product: i.product,
                         price: i.price,
                         discount: i.discount,
@@ -123,6 +125,10 @@ const GetOrders = (req, res, next) => {
     let query = {}
     if (req.userType != "admin") {
         query.account = req.userId
+    }
+
+    if(req.query.paymentStatus){
+        query.paymentStatus = req.query.paymentStatus
     }
 
     // console.log(query)
@@ -263,10 +269,59 @@ const UpdateOrder = (req, res, next) => {
         })
 }
 
+const GetOrderProductOrders = async (req, res, next) => {
+
+    let query = {}
+    if (req.userType != "admin") {
+        query.account = req.userId
+    }
+
+    const currentPage = req.query.page || 1;
+    const perPage = 2;
+    let totalItems;
+    OrderProduct.find(query)
+        .countDocuments()
+        .then(count => {
+            // console.log(count)
+            totalItems = count;
+            return OrderProduct.find(query)
+                .populate("account")
+                .populate("order", {
+                    orderNumber: 1,
+                })
+                .skip((currentPage - 1) * perPage)
+                .limit(perPage);
+        })
+        .then(orderProducts => {
+            res.status(200).json({
+                message: 'Fetched successfully.',
+                orderProducts: orderProducts.map(i => {
+                    // console.log(i.order.orderNumber)
+                    return {
+                        ...i._doc,
+                        order: {
+                            _id: i.order._id,
+                            orderNumber: `OD-${i.order.orderNumber}`
+                        }
+                    }
+                }),
+                totalItems: totalItems,
+            });
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500
+            }
+            next(err)
+        })
+
+}
+
 module.exports = {
     CreateOrder,
     GetOrders,
     DeleteOrder,
     GetOrder,
     UpdateOrder,
+    GetOrderProductOrders,
 }

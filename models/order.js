@@ -31,6 +31,11 @@ const orderSchema = new Schema(
             type: String,
         }],
         paymentDetail: [{
+            account: {
+                type: Schema.Types.ObjectId,
+                index: true,
+                ref: "Account"
+            },
             product: {
                 type: Schema.Types.ObjectId,
                 index: true,
