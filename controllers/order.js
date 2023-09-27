@@ -127,7 +127,7 @@ const GetOrders = (req, res, next) => {
         query.account = req.userId
     }
 
-    if(req.query.paymentStatus){
+    if (req.query.paymentStatus) {
         query.paymentStatus = req.query.paymentStatus
     }
 
@@ -174,12 +174,20 @@ const GetOrder = (req, res, next) => {
     Order.findById(orderId)
         .populate("account")
         .populate("paymentDetail.product")
+        .populate("paymentDetail.account")
         .then(order => {
             if (!order) {
                 const error = new Error('Could not find.');
                 error.statusCode = 404;
                 throw error;
             }
+
+            let detail = []
+
+            // for (let i of order.paymentDetail) {
+            //     console.log(i)
+            // }
+
             res.status(200).json({
                 message: 'fetched.', order: {
                     ...order._doc,
