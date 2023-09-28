@@ -175,7 +175,7 @@ const GetOrder = (req, res, next) => {
         .populate("account")
         .populate("paymentDetail.product")
         .populate("paymentDetail.account")
-        .then(order => {
+        .then(async order => {
             if (!order) {
                 const error = new Error('Could not find.');
                 error.statusCode = 404;
@@ -184,9 +184,49 @@ const GetOrder = (req, res, next) => {
 
             let detail = []
 
-            // for (let i of order.paymentDetail) {
-            //     console.log(i)
-            // }
+            for (let i = 0; i < order.paymentDetail.length; i++) {
+
+                let p = await Product.findOne({
+                    _id: order.paymentDetail[i].product._id
+                }, {
+                    "material": 1,
+                    "housing": 1,
+                    "trendName": 1,
+                    "fileTypeName": 1,
+                    "jewerlyTypeName": 1,
+                    "detailName": 1,
+                    "setName": 1,
+                })
+                    .populate("material", {
+                        materialName: 1,
+                    })
+                    .populate("housing", {
+                        housingName: 1,
+                    })
+                    .populate("trend", {
+                        trendName: 1,
+                    })
+                    .populate("fileType", {
+                        fileTypeName: 1,
+                    })
+                    .populate("jewerlyType", {
+                        jewerlyTypeName: 1,
+                    })
+                    .populate("detail", {
+                        detailName: 1,
+                    })
+                    .populate("set", {
+                        setName: 1,
+                    })
+
+                order.paymentDetail[i].product.material = p.material
+                order.paymentDetail[i].product.housing = p.housing
+                order.paymentDetail[i].product.trend = p.trend
+                order.paymentDetail[i].product.fileType = p.fileType
+                order.paymentDetail[i].product.jewerlyType = p.jewerlyType
+                order.paymentDetail[i].product.detail = p.detail
+                order.paymentDetail[i].product.set = p.set
+            }
 
             res.status(200).json({
                 message: 'fetched.', order: {
