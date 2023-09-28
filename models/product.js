@@ -19,11 +19,11 @@ const productSchema = new Schema(
         productCover: {
             type: String
         },
-        producDetail: {
+        productDetail: {
             type: String,
             index: true
         },
-        producDetailTH: {
+        productDetailTH: {
             type: String,
             index: true
         },

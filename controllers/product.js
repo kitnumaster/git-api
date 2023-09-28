@@ -199,7 +199,7 @@ const UpdateProduct = (req, res, next) => {
             for (let i of req.body.update.files) {
 
                 let newPath = `files/${accountId}`
-                let newFile = moveFile('./' + i.fileType, `./${newPath}`)
+                let newFile = moveFile('./' + i.filePath, `./${newPath}`)
                 move.push({
                     fileType: i.fileType,
                     filePath: `${newPath}/${newFile}`
