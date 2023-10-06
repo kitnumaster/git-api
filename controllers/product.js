@@ -313,8 +313,8 @@ const GetProductSummaries = async (req, res, next) => {
             totalItems = count;
             return ProductSummaries.find(query)
                 .populate("account")
-                .populate("product")
-                .populate("order")
+                .populate("products.product")
+                .populate("products.order")
                 .skip((currentPage - 1) * perPage)
                 .limit(perPage);
         })
@@ -343,6 +343,7 @@ const GetProductSummaries = async (req, res, next) => {
 
 const createProductSummaries = async () => {
     let month = moment().format("M")
+    // month = "9"
     const orderProduct = await OrderProduct.aggregate([
         {
             $match: {
@@ -384,6 +385,7 @@ const createProductSummaries = async () => {
     ]);
     // console.log(orderProduct)
     // return orderProduct
+
     let g = null
     let number = 1
     const getNumber = await ProductSummaries.findOne({})
@@ -397,16 +399,17 @@ const createProductSummaries = async () => {
         for (let k in g) {
 
             let obj = {}
-            let product = []
-            let order = []
+            let products = []
             let price = new Big(0)
             let totalDiscount = new Big(0)
             let totalPrice = new Big(0)
             let id = []
             for (let i of g[k]) {
                 id.push(i._id)
-                product.push(i.product)
-                order.push(i.order)
+                products.push({
+                    order: i.order,
+                    product: i.product
+                })
                 price = totalPrice.plus(Number(i.price))
                 totalDiscount = totalPrice.plus(Number(i.discount))
                 totalPrice = totalPrice.plus(Number(i.total))
@@ -414,8 +417,7 @@ const createProductSummaries = async () => {
             }
             obj.account = k
             obj.summaryNumber = zeroFill(number, 4)
-            obj.product = product
-            obj.order = order
+            obj.products = products
             obj.price = price.toFixed(2)
             obj.discount = totalDiscount.toFixed(2)
             obj.total = totalPrice.toFixed(2)

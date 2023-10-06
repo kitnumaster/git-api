@@ -9,15 +9,26 @@ const productSummarySchema = new Schema(
             index: true,
             ref: 'Account'
         },
+        transaction:{
+            type:String
+        },
         summaryNumber: {
             type: String,
             unique: true,
         },
-        product: [{
-            type: Schema.Types.ObjectId,
-            index: true,
-            ref: "Product"
-        }],
+        products: [
+            {
+                order: {
+                    type: Schema.Types.ObjectId,
+                    index: true,
+                    ref: "Order"
+                },
+                product: {
+                    type: Schema.Types.ObjectId,
+                    index: true,
+                    ref: "Product"
+                }
+            }],
         price: {
             type: Number
         },
@@ -27,11 +38,6 @@ const productSummarySchema = new Schema(
         total: {
             type: Number
         },
-        order: [{
-            type: Schema.Types.ObjectId,
-            index: true,
-            ref: "Order"
-        }],
         paymentStatus: {
             type: Number,//1 รอหลักฐาน 2 แนบหลักฐานรอยื่ยัน 3 ยืนยัน 4 reject 5 cancel
             index: true
