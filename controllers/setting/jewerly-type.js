@@ -2,6 +2,11 @@ const { validationResult } = require('express-validator/check')
 const JewerlyType = require('../../models/setting/jewelry-type')
 
 const CreateJewerlyType = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const error = new Error('Validation failed, entered data is incorrect.');
@@ -32,7 +37,11 @@ const CreateJewerlyType = (req, res, next) => {
 }
 
 const GetJewerlyTypes = (req, res, next) => {
-
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     JewerlyType.find({})
         .then(jewerlyTypes => {
             res.status(200).json({
@@ -49,6 +58,11 @@ const GetJewerlyTypes = (req, res, next) => {
 }
 
 const GetJewerlyType = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const jewerlyTypeId = req.params.jewerlyTypeId
     JewerlyType.findById(jewerlyTypeId)
         .then(jewerlyType => {
@@ -68,6 +82,11 @@ const GetJewerlyType = (req, res, next) => {
 }
 
 const UpdateJewerlyType = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const jewerlyTypeId = req.params.jewerlyTypeId;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

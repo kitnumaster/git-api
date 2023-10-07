@@ -8,6 +8,11 @@ const productSchema = new Schema(
             required: true,
             ref: 'Account'
         },
+        sold: {
+            type: Boolean,
+            index: true,
+            default: false
+        },
         productName: {
             type: String,
             index: true
@@ -89,6 +94,10 @@ const productSchema = new Schema(
             index: true,
             default: true
         },
+        views: {
+            type: Number,
+            default: 0
+        }
     },
     { timestamps: true }
 );

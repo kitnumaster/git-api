@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
   const authHeader = req.get('Authorization');
+  const ipAddresses = req.header('x-forwarded-for') || req.socket.remoteAddress
   if (!authHeader) {
     const error = new Error('Not authenticated.');
     error.statusCode = 401;
@@ -20,6 +21,7 @@ module.exports = (req, res, next) => {
     error.statusCode = 401;
     throw error;
   }
+  req.ipAddresses = ipAddresses
   if (decodedToken.userType == 'admin') {
     req.userId = decodedToken.userId;
     req.email = decodedToken.email;

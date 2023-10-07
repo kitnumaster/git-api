@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const isAuth = require('../middleware/is-auth')
+const getInfo = require('../middleware/get-info')
 const { body } = require('express-validator/check')
 
 const {
@@ -10,6 +11,8 @@ const {
     UpdateProduct,
     GetProductSummaries,
     UpdateProductSummaries,
+    UserGetProducts,
+    UserGetProduct,
 } = require('../controllers/product')
 
 
@@ -19,9 +22,9 @@ router.post(
     isAuth,
     CreateProduct
 )
-router.get('/products', GetProducts)
+router.get('/products', UserGetProducts)
 router.get('/my-products', isAuth, GetProducts)
-router.get('/product/:productId', GetProduct)
+router.get('/product/:productId', getInfo, UserGetProduct)
 router.put('/my-product/:productId', isAuth,
     UpdateProduct)
 router.put('/product/:productId', isAuth,

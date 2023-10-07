@@ -7,6 +7,7 @@ const moment = require("moment")
 const Product = require('../models/product')
 const OrderProduct = require('../models/orderProduct')
 const ProductSummaries = require('../models/productSummaries')
+const ProductViewLog = require('../models/log/productViewLog')
 
 const CreateProduct = (req, res, next) => {
     const errors = validationResult(req);
@@ -126,6 +127,69 @@ const GetProducts = (req, res, next) => {
         })
 }
 
+const UserGetProducts = (req, res, next) => {
+
+    let query = {
+        sold: false
+    }
+    if (req.userType && req.userType == 2) {
+        query.account = req.userId
+    }
+
+    if (req.query.designer) {
+        query.account = req.query.designer
+    }
+
+    const currentPage = req.query.page || 1;
+    const perPage = 30;
+    let totalItems;
+    Product.find(query)
+        .countDocuments()
+        .then(count => {
+            totalItems = count;
+            return Product.find(query, {
+                'files': 0
+            })
+                .populate("account")
+                .populate("material", {
+                    materialName: 1,
+                })
+                .populate("housing", {
+                    housingName: 1,
+                })
+                .populate("trend", {
+                    trendName: 1,
+                })
+                .populate("fileType", {
+                    fileTypeName: 1,
+                })
+                .populate("jewerlyType", {
+                    jewerlyTypeName: 1,
+                })
+                .populate("detail", {
+                    detailName: 1,
+                })
+                .populate("set", {
+                    setName: 1,
+                })
+                .skip((currentPage - 1) * perPage)
+                .limit(perPage);
+        })
+        .then(products => {
+            res.status(200).json({
+                message: 'Fetched successfully.',
+                products: products,
+                totalItems: totalItems,
+            });
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500
+            }
+            next(err)
+        })
+}
+
 const GetProduct = (req, res, next) => {
     const productId = req.params.productId
     Product.findById(productId)
@@ -157,6 +221,54 @@ const GetProduct = (req, res, next) => {
                 error.statusCode = 404;
                 throw error;
             }
+            res.status(200).json({ message: 'fetched.', product: product })
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500
+            }
+            next(err)
+        })
+}
+
+const UserGetProduct = (req, res, next) => {
+    // console.log(req.ipAddresses)
+    // console.log(req.userId)
+    const productId = req.params.productId
+    Product.findById(productId, {
+        "files": 0
+    })
+        .populate("account")
+        .populate("material", {
+            materialName: 1,
+        })
+        .populate("housing", {
+            housingName: 1,
+        })
+        .populate("trend", {
+            trendName: 1,
+        })
+        .populate("fileType", {
+            fileTypeName: 1,
+        })
+        .populate("jewerlyType", {
+            jewerlyTypeName: 1,
+        })
+        .populate("detail", {
+            detailName: 1,
+        })
+        .populate("set", {
+            setName: 1,
+        })
+        .then(product => {
+            if (!product) {
+                const error = new Error('Could not find.');
+                error.statusCode = 404;
+                throw error;
+            }
+
+            AddProductViewLog(req.userId || null, productId, req.ipAddresses || null)
+
             res.status(200).json({ message: 'fetched.', product: product })
         })
         .catch(err => {
@@ -457,11 +569,43 @@ const zeroFill = (number, width) => {
     return number + ""; // always return a string
 };
 
+const AddProductViewLog = async (account, productId, IP) => {
+    // console.log('ok')
+    let obj = {
+        account: account,
+        product: productId,
+        IP: IP
+    }
+    // console.log(obj)
+    const productViewLog = new ProductViewLog(obj)
+
+    await productViewLog.save()
+        .then(result => {
+
+            //add view
+            Product.findById(productId, {
+                views: 1
+            })
+                .then(async product => {
+                    console.log(product)
+                    await Product.findByIdAndUpdate(productId, {
+                        views: product.views + 1
+                    }, { new: true })
+
+
+                })
+
+        })
+
+}
+
 module.exports = {
     CreateProduct,
     GetProducts,
     GetProduct,
     UpdateProduct,
     GetProductSummaries,
-    UpdateProductSummaries
+    UpdateProductSummaries,
+    UserGetProducts,
+    UserGetProduct,
 }

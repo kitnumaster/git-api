@@ -2,6 +2,11 @@ const { validationResult } = require('express-validator/check')
 const Housing = require('../../models/setting/housing')
 
 const CreateHousing = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const error = new Error('Validation failed, entered data is incorrect.');
@@ -32,7 +37,11 @@ const CreateHousing = (req, res, next) => {
 }
 
 const GetHousings = (req, res, next) => {
-
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     Housing.find({})
         .then(housings => {
             res.status(200).json({
@@ -49,6 +58,11 @@ const GetHousings = (req, res, next) => {
 }
 
 const GetHousing = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const housingId = req.params.housingId
     Housing.findById(housingId)
         .then(housing => {
@@ -68,6 +82,11 @@ const GetHousing = (req, res, next) => {
 }
 
 const UpdateHousing = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const housingId = req.params.housingId;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

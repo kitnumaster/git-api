@@ -2,6 +2,11 @@ const { validationResult } = require('express-validator/check')
 const Material = require('../../models/setting/material')
 
 const CreateMaterial = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const error = new Error('Validation failed, entered data is incorrect.');
@@ -32,7 +37,11 @@ const CreateMaterial = (req, res, next) => {
 }
 
 const GetMaterials = (req, res, next) => {
-
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     Material.find({})
         .then(materials => {
             res.status(200).json({
@@ -49,6 +58,11 @@ const GetMaterials = (req, res, next) => {
 }
 
 const GetMaterial = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const materialId = req.params.materialId
     Material.findById(materialId)
         .then(material => {
@@ -68,6 +82,11 @@ const GetMaterial = (req, res, next) => {
 }
 
 const UpdateMaterial = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const materialId = req.params.materialId;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

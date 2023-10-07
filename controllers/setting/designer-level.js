@@ -8,6 +8,11 @@ const CreateDesignerLevel = (req, res, next) => {
         error.statusCode = 422;
         throw error;
     }
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
 
     const designerLevelName = req.body.designerLevelName
     const designerLevelNameTH = req.body.designerLevelNameTH
@@ -32,7 +37,11 @@ const CreateDesignerLevel = (req, res, next) => {
 }
 
 const GetDesignerLevels = (req, res, next) => {
-
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     DesignerLevel.find({})
         .then(designerLevels => {
             res.status(200).json({
@@ -49,6 +58,11 @@ const GetDesignerLevels = (req, res, next) => {
 }
 
 const GetDesignerLevel = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const designerLevelId = req.params.designerLevelId
     DesignerLevel.findById(designerLevelId)
         .then(designerLevel => {
@@ -68,6 +82,11 @@ const GetDesignerLevel = (req, res, next) => {
 }
 
 const UpdateDesignerLevel = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const designerLevelId = req.params.designerLevelId;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

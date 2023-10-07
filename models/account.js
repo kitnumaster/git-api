@@ -7,6 +7,12 @@ const accountSchema = new Schema(
       type: Number,
       default: 1,//1=customer, 2=designer
     },
+    avatar: {
+      type: String
+    },
+    document: [{
+      type: String
+    }],
     requestDesigner: {
       type: Boolean,
       default: false,
@@ -77,6 +83,11 @@ const accountSchema = new Schema(
     },
     bankAccount: {
       type: String
+    },
+    views: {
+      type: Number,
+      index: true,
+      default: 0
     },
   },
   { timestamps: true }

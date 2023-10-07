@@ -301,7 +301,19 @@ const UpdateOrder = (req, res, next) => {
                     orderStatus: 2,
                     orderCompletetDate: paymentCompleteDate
                 })
-                console.log(a)
+                let productId = []
+                for (let i of order.paymentDetail) {
+                    productId.push(i.product)
+                }
+                // console.log(productId)
+                await Product.updateMany(
+                    {
+                        _id: {
+                            $in: productId
+                        }
+                    }, {
+                    sold: true,
+                })
             }
 
             return Order.findByIdAndUpdate(orderId, update, { new: true })
@@ -362,6 +374,10 @@ const GetOrderProductOrders = async (req, res, next) => {
             }
             next(err)
         })
+
+}
+
+const soldProduct = () => {
 
 }
 

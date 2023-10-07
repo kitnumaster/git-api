@@ -23,7 +23,7 @@ router.get('/orders', isAuth, GetOrders)
 router.get('/my-orders', isAuth, GetOrders)
 router.get('/orders', isAuth, GetOrders)
 router.get('/order/:orderId', isAuth, GetOrder)
-router.put('/order/:orderId', isAuth, UpdateOrder)
+router.put('/order/:orderId', UpdateOrder)
 router.delete('/order/:orderId', isAuth,
     DeleteOrder)
 router.get('/my-sale-orders', isAuth, GetOrderProductOrders)

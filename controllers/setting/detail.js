@@ -2,6 +2,11 @@ const { validationResult } = require('express-validator/check')
 const Detail = require('../../models/setting/detail')
 
 const CreateDetail = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const error = new Error('Validation failed, entered data is incorrect.');
@@ -32,7 +37,11 @@ const CreateDetail = (req, res, next) => {
 }
 
 const GetDetails = (req, res, next) => {
-
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     Detail.find({})
         .then(details => {
             res.status(200).json({
@@ -49,6 +58,11 @@ const GetDetails = (req, res, next) => {
 }
 
 const GetDetail = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const detailId = req.params.detailId
     Detail.findById(detailId)
         .then(detail => {
@@ -68,6 +82,11 @@ const GetDetail = (req, res, next) => {
 }
 
 const UpdateDetail = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const detailId = req.params.detailId;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

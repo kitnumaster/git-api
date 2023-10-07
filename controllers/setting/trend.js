@@ -2,6 +2,11 @@ const { validationResult } = require('express-validator/check')
 const Trend = require('../../models/setting/trend')
 
 const CreateTrend = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const error = new Error('Validation failed, entered data is incorrect.');
@@ -32,7 +37,11 @@ const CreateTrend = (req, res, next) => {
 }
 
 const GetTrends = (req, res, next) => {
-
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     Trend.find({})
         .then(trends => {
             res.status(200).json({
@@ -49,6 +58,11 @@ const GetTrends = (req, res, next) => {
 }
 
 const GetTrend = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const trendId = req.params.trendId
     Trend.findById(trendId)
         .then(trend => {
@@ -68,6 +82,11 @@ const GetTrend = (req, res, next) => {
 }
 
 const UpdateTrend = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const trendId = req.params.trendId;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

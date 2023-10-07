@@ -2,6 +2,11 @@ const { validationResult } = require('express-validator/check')
 const Role = require('../../models/setting/role')
 
 const CreateRole = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const error = new Error('Validation failed, entered data is incorrect.');
@@ -28,7 +33,11 @@ const CreateRole = (req, res, next) => {
 }
 
 const GetRoles = (req, res, next) => {
-
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     Role.find({})
         .then(roles => {
             res.status(200).json({
@@ -45,6 +54,11 @@ const GetRoles = (req, res, next) => {
 }
 
 const GetRole = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const roleId = req.params.roleId
     Role.findById(roleId)
         .then(role => {
@@ -64,6 +78,11 @@ const GetRole = (req, res, next) => {
 }
 
 const UpdateRole = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const roleId = req.params.roleId;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

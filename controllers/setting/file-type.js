@@ -2,6 +2,11 @@ const { validationResult } = require('express-validator/check')
 const FileType = require('../../models/setting/file-type')
 
 const CreateFileType = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const error = new Error('Validation failed, entered data is incorrect.');
@@ -32,7 +37,11 @@ const CreateFileType = (req, res, next) => {
 }
 
 const GetFileTypes = (req, res, next) => {
-
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     FileType.find({})
         .then(fileTypes => {
             res.status(200).json({
@@ -49,6 +58,11 @@ const GetFileTypes = (req, res, next) => {
 }
 
 const GetFileType = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const fileTypeId = req.params.fileTypeId
     FileType.findById(fileTypeId)
         .then(fileType => {
@@ -68,6 +82,11 @@ const GetFileType = (req, res, next) => {
 }
 
 const UpdateFileType = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const fileTypeId = req.params.fileTypeId;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

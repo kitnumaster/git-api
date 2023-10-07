@@ -2,6 +2,11 @@ const { validationResult } = require('express-validator/check')
 const Set = require('../../models/setting/set')
 
 const CreateSet = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const error = new Error('Validation failed, entered data is incorrect.');
@@ -32,7 +37,11 @@ const CreateSet = (req, res, next) => {
 }
 
 const GetSets = (req, res, next) => {
-
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     Set.find({})
         .then(sets => {
             res.status(200).json({
@@ -49,6 +58,11 @@ const GetSets = (req, res, next) => {
 }
 
 const GetSet = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const setId = req.params.setId
     Set.findById(setId)
         .then(set => {
@@ -68,6 +82,11 @@ const GetSet = (req, res, next) => {
 }
 
 const UpdateSet = (req, res, next) => {
+    if (req.userType != 'admin') {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
     const setId = req.params.setId;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

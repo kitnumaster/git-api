@@ -8,7 +8,9 @@ const GetAccounts = (req, res, next) => {
         query.requestDesigner = req.query.requestDesigner
     }
     if (req.userType == 'admin') {
-        Account.find(query)
+        Account.find(query, {
+            password: 0
+        })
             .then(accounts => {
                 res.status(200).json({
                     message: 'Fetched successfully.',
@@ -35,7 +37,9 @@ const GetAccount = (req, res, next) => {
     } else {
         accountId = req.userId
     }
-    Account.findById(accountId)
+    Account.findById(accountId, {
+        password: 0
+    })
         .then(account => {
             if (!account) {
                 const error = new Error('Could not find.');

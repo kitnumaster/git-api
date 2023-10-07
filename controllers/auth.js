@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 const Account = require('../models/account');
+const LoginLog = require('../models/log/loginLog')
 
 exports.signup = (req, res, next) => {
   const errors = validationResult(req);
@@ -181,6 +182,7 @@ exports.AccountLogin = (req, res, next) => {
         'NLd0tmV6hw',
         { expiresIn: '24h' }
       );
+      addLoginLog(loadedUser._id)
       res.status(200).json({ token: token, userId: loadedUser._id.toString() });
     })
     .catch(err => {
@@ -358,5 +360,14 @@ exports.SetToken = (loadedUser) => {
   );
 
   return token
+
+}
+
+const addLoginLog = async (account) => {
+
+  const loginLog = new LoginLog({
+    account: account,
+  });
+  await loginLog.save();
 
 }
