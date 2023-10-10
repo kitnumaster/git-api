@@ -77,7 +77,8 @@ const CreateOrder = async (req, res, next) => {
         // });
         let orderNumber = 1
         const getNumber = await Order.findOne({})
-            .sort({ createAt: -1 })
+            .sort({ createdAt: -1 })
+        // console.log(getNumber)
         if (getNumber) {
             orderNumber = parseInt(getNumber.orderNumber) + 1
         }
