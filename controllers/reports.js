@@ -376,11 +376,11 @@ const ReportDesignerOrders = async (req, res, next) => {
     }
 
     let dataDate2 = null
-    if (req.query.paymentCompleteDate) {
-        dataDate2 = req.query.paymentCompleteDate.split(":")
+    if (req.query.paymentTranferDate) {
+        dataDate2 = req.query.paymentTranferDate.split(":")
         date = moment(dataDate2[0]).subtract(7, 'hours').format("YYYY-MM-DD")
         date2 = moment(dataDate2[1]).format("YYYY-MM-DD")
-        query.paymentCompleteDate = {
+        query.paymentTranferDate = {
             $gte: new Date(`${date} 17:00:00`),
             $lte: new Date(`${date2} 16:59:59`)
         }
@@ -415,7 +415,7 @@ const ReportDesignerOrders = async (req, res, next) => {
                         total: productFound.total,
                         transaction: i.transaction ? transaction : '-',
                         paymentStatus: i.paymentStatus,
-                        paymentTranferDate: i.paymentTranferDate,
+                        paymentTranferDate: i.paymentTranferDate ? i.paymentTranferDate : '-',
                         paymentTranferSlip: i.paymentTranferSlip,
                         bankAccountName: i.account.bankAccountName ? i.account.bankAccountName : '-',
                         bankName: i.account.bankName ? i.account.bankName : '-',
