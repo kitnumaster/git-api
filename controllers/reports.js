@@ -150,7 +150,16 @@ const ReportOrders = async (req, res, next) => {
 const ReportCustomers = async (req, res, next) => {
 
     let query = {}
-
+    let dataDate = null
+    if (req.query.createdAt) {
+        dataDate = req.query.createdAt.split(":")
+        date = moment(dataDate[0]).subtract(7, 'hours').format("YYYY-MM-DD")
+        date2 = moment(dataDate[1]).format("YYYY-MM-DD")
+        query.createdAt = {
+            $gte: new Date(`${date} 17:00:00`),
+            $lte: new Date(`${date2} 16:59:59`)
+        }
+    }
     Account.find(query)
         .then(account => {
             let n = 0
