@@ -25,6 +25,7 @@ const orderRoutes = require('./routes/order')
 const reportRoutes = require('./routes/reports')
 const designerRoutes = require('./routes/designer')
 const newsRoutes = require('./routes/news')
+const homePageRoutes = require('./routes/homePage')
 require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })
 const app = express();
 
@@ -75,7 +76,7 @@ app.use('/setting', jewerlyTypeRoutes, materialRoutes
   , housingRoutes, trendRoutes
   , designerLevelRoutes, detailRoutes
   , fileTypeRoutes, setRoutes, roleRoutes)
-app.use('/', uploadRoute, accountRoutes, productRoutes, cartRoutes, orderRoutes, designerRoutes, newsRoutes)
+app.use('/', uploadRoute, accountRoutes, productRoutes, cartRoutes, orderRoutes, designerRoutes, newsRoutes, homePageRoutes)
 
 app.use((error, req, res, next) => {
   console.log(error);
