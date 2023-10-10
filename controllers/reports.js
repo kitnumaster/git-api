@@ -203,6 +203,17 @@ const ReportDesigners = async (req, res, next) => {
         userType: 2
     }
 
+    let dataDate = null
+    if (req.query.createdAt) {
+        dataDate = req.query.createdAt.split(":")
+        date = moment(dataDate[0]).subtract(7, 'hours').format("YYYY-MM-DD")
+        date2 = moment(dataDate[1]).format("YYYY-MM-DD")
+        query.createdAt = {
+            $gte: new Date(`${date} 17:00:00`),
+            $lte: new Date(`${date2} 16:59:59`)
+        }
+    }
+
     Account.aggregate([
         {
             $match: query
@@ -253,8 +264,9 @@ const ReportDesigners = async (req, res, next) => {
             let productSales = 0
             for (let j of i.productSummaries) {
                 sales = sales.plus(j.total)
-                productSales += j.product.length
+                productSales += j.products.length
             }
+
 
             result.push({
                 no: n,
@@ -289,7 +301,16 @@ const ReportDesigners = async (req, res, next) => {
 const ReportDesigns = async (req, res, next) => {
 
     let query = {}
-
+    let dataDate = null
+    if (req.query.createdAt) {
+        dataDate = req.query.createdAt.split(":")
+        date = moment(dataDate[0]).subtract(7, 'hours').format("YYYY-MM-DD")
+        date2 = moment(dataDate[1]).format("YYYY-MM-DD")
+        query.createdAt = {
+            $gte: new Date(`${date} 17:00:00`),
+            $lte: new Date(`${date2} 16:59:59`)
+        }
+    }
     Product.find(query)
         .populate("account", {
             firstName: 1,
