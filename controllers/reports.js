@@ -132,9 +132,10 @@ const ReportOrders = async (req, res, next) => {
                     discount: product.discount,
                     total: product.total,
                 })
+                n++
             }
 
-            n++
+
         }
 
         res.status(200).json({
