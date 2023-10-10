@@ -3,7 +3,7 @@ const Order = require('../models/order')
 const OrderProduct = require('../models/orderProduct')
 const Product = require('../models/product')
 const Big = require('big.js');
-const order = require('../models/order');
+const ProductDownloadLog = require('../models/log/productDownloadLog');
 
 const zeroFill = (number, width) => {
     width -= number.toString().length;
@@ -414,7 +414,8 @@ const DownloadProduct = (req, res, next) => {
         .then(orders => {
             console.log(orders)
             if (orders.length > 0) {
-                console.log('orders')
+                // console.log('orders')
+                AddProductDownloadLog(req.userId || null, productId, req.ipAddresses || null)
                 return Product.findById(productId, {
                     files: 1
                 })
@@ -431,6 +432,24 @@ const DownloadProduct = (req, res, next) => {
                 err.statusCode = 500
             }
             next(err)
+        })
+
+}
+
+const AddProductDownloadLog = async (account, productId, IP) => {
+    // console.log('ok')
+    let obj = {
+        account: account,
+        product: productId,
+        IP: IP
+    }
+    // console.log(obj)
+    const productDownloadLog = new ProductDownloadLog(obj)
+
+    await productDownloadLog.save()
+        .then(result => {
+
+
         })
 
 }
