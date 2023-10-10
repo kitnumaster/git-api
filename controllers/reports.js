@@ -243,7 +243,7 @@ const ReportDesigners = async (req, res, next) => {
             let productSales = 0
             for (let j of i.productSummaries) {
                 sales = sales.plus(j.total)
-                productSales += j.product.length
+                productSales += j.product?.length
             }
 
             result.push({
