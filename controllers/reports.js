@@ -418,7 +418,9 @@ const ReportDesignerOrders = async (req, res, next) => {
                         paymentTranferDate: i.paymentTranferDate,
                         paymentTranferSlip: i.paymentTranferSlip,
                         bankAccountName: i.account.bankAccountName ? i.account.bankAccountName : '-',
-                        bankName: i.account.bankName ? i.account.bankName : '-'
+                        bankName: i.account.bankName ? i.account.bankName : '-',
+                        createdAt: i.createdAt,
+                        orderCreatedAt: order.createdAt
                     })
                 }
             }

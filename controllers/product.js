@@ -501,7 +501,7 @@ const createProductSummaries = async () => {
     let g = null
     let number = 1
     const getNumber = await ProductSummaries.findOne({})
-        .sort({ createAt: -1 })
+        .sort({ createdAt: -1 })
     if (getNumber) {
         number = parseInt(getNumber.summaryNumber) + 1
     }

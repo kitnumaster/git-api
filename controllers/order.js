@@ -3,6 +3,7 @@ const Order = require('../models/order')
 const OrderProduct = require('../models/orderProduct')
 const Product = require('../models/product')
 const Big = require('big.js');
+const order = require('../models/order');
 
 const zeroFill = (number, width) => {
     width -= number.toString().length;
@@ -122,29 +123,45 @@ const CreateOrder = async (req, res, next) => {
 }
 
 const GetOrders = (req, res, next) => {
-
+    let noFile = null
     let query = {}
     if (req.userType != "admin") {
         query.account = req.userId
+        noFile = { files: 0 }
     }
 
     if (req.query.paymentStatus) {
         query.paymentStatus = req.query.paymentStatus
     }
 
+    if (req.query.orderNumber) {
+        query.orderNumber = req.query.orderNumber.replace('OD-', '')
+    }
+
+    let dataDate = null
+    if (req.query.createdAt) {
+        dataDate = req.query.createdAt.split(":")
+        date = moment(dataDate[0]).subtract(7, 'hours').format("YYYY-MM-DD")
+        date2 = moment(dataDate[1]).format("YYYY-MM-DD")
+        query.createdAt = {
+            $gte: new Date(`${date} 17:00:00`),
+            $lte: new Date(`${date2} 16:59:59`)
+        }
+    }
+
     // console.log(query)
     const currentPage = req.query.page || 1;
-    const perPage = 2;
+    const perPage = 30;
     let totalItems;
     Order.find(query)
         .countDocuments()
         .then(count => {
             totalItems = count;
             return Order.find(query)
-                .populate("account",{
+                .populate("account", {
                     password: 0
                 })
-                .populate("paymentDetail.product")
+                .populate("paymentDetail.product", noFile)
                 .skip((currentPage - 1) * perPage)
                 .limit(perPage);
         })
@@ -154,7 +171,7 @@ const GetOrders = (req, res, next) => {
                 orders: orders.map(i => {
                     return {
                         ...i._doc,
-                        orderNumber: `OD-${i.orderNumber}`
+                        orderNumber: `OD-${i.orderNumber}`,
                     }
                 }),
                 totalItems: totalItems,
@@ -171,15 +188,17 @@ const GetOrders = (req, res, next) => {
 const GetOrder = (req, res, next) => {
 
     const orderId = req.params.orderId
-    // if (req.userType != "admin") {
-    //     query.account = req.userId
-    // }
+    let noFile = null
+    if (req.userType != "admin") {
+        query.account = req.userId
+        noFile = { files: 0 }
+    }
     Order.findById(orderId)
         .populate("account", {
             password: 0
         })
-        .populate("paymentDetail.product")
-        .populate("paymentDetail.account")
+        .populate("paymentDetail.product", noFile)
+        .populate("paymentDetail.account", { password: 0 })
         .then(async order => {
             if (!order) {
                 const error = new Error('Could not find.');
@@ -382,7 +401,37 @@ const GetOrderProductOrders = async (req, res, next) => {
 
 }
 
-const soldProduct = () => {
+const DownloadProduct = (req, res, next) => {
+    const productId = req.params.productId
+    let query = {
+        'paymentDetail.product': productId
+    }
+    if (req.userType != "admin") {
+        query.account = req.userId
+    }
+    console.log(query)
+    Order.find(query)
+        .then(orders => {
+            console.log(orders)
+            if (orders.length > 0) {
+                console.log('orders')
+                return Product.findById(productId, {
+                    files: 1
+                })
+
+            }
+        })
+        .then(product => {
+            res.status(200).json({
+                product: product
+            });
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500
+            }
+            next(err)
+        })
 
 }
 
@@ -393,4 +442,5 @@ module.exports = {
     GetOrder,
     UpdateOrder,
     GetOrderProductOrders,
+    DownloadProduct
 }
