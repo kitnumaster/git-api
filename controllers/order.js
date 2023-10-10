@@ -141,7 +141,9 @@ const GetOrders = (req, res, next) => {
         .then(count => {
             totalItems = count;
             return Order.find(query)
-                .populate("account")
+                .populate("account",{
+                    password: 0
+                })
                 .populate("paymentDetail.product")
                 .skip((currentPage - 1) * perPage)
                 .limit(perPage);
@@ -173,7 +175,9 @@ const GetOrder = (req, res, next) => {
     //     query.account = req.userId
     // }
     Order.findById(orderId)
-        .populate("account")
+        .populate("account", {
+            password: 0
+        })
         .populate("paymentDetail.product")
         .populate("paymentDetail.account")
         .then(async order => {
