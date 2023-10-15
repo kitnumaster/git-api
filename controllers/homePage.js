@@ -48,8 +48,30 @@ const GetHomePageLists = (req, res, next) => {
         query = {
         }
     }
-    if (req.query.tags) {
-        query.tags = req.query.tags
+    if (req.query.active) {
+        query.active = req.query.active
+    }
+    if (req.query.type) {
+        query.type = req.query.type
+    }
+    let dataDate = null
+    if (req.query.createdAt) {
+        dataDate = req.query.createdAt.split(":")
+        date = moment(dataDate[0]).subtract(7, 'hours').format("YYYY-MM-DD")
+        date2 = moment(dataDate[1]).format("YYYY-MM-DD")
+        query.createdAt = {
+            $gte: new Date(`${date} 17:00:00`),
+            $lte: new Date(`${date2} 16:59:59`)
+        }
+    }
+    let sort = {
+        createdAt: -1
+    }
+    if (req.query.sortBy) {
+        let sortBy = req.query.sortBy
+        sort = {
+            [sortBy]: req.query.sortType || -1
+        }
     }
     const currentPage = req.query.page || 1;
     const perPage = 30;
@@ -59,6 +81,7 @@ const GetHomePageLists = (req, res, next) => {
         .then(count => {
             totalItems = count;
             return HomePage.find(query)
+                .sort(sort)
                 .skip((currentPage - 1) * perPage)
                 .limit(perPage);
         })

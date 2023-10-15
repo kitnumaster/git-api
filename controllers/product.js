@@ -139,6 +139,31 @@ const UserGetProducts = (req, res, next) => {
     if (req.query.designer) {
         query.account = req.query.designer
     }
+    if (req.query.productName) {
+        query.productName = req.query.productName
+    }
+    if (req.query.productNameTH) {
+        query.productNameTH = req.query.productNameTH
+    }
+    let dataDate = null
+    if (req.query.createdAt) {
+        dataDate = req.query.createdAt.split(":")
+        date = moment(dataDate[0]).subtract(7, 'hours').format("YYYY-MM-DD")
+        date2 = moment(dataDate[1]).format("YYYY-MM-DD")
+        query.createdAt = {
+            $gte: new Date(`${date} 17:00:00`),
+            $lte: new Date(`${date2} 16:59:59`)
+        }
+    }
+    let sort = {
+        createdAt: -1
+    }
+    if (req.query.sortBy) {
+        let sortBy = req.query.sortBy
+        sort = {
+            [sortBy]: req.query.sortType || -1
+        }
+    }
 
     const currentPage = req.query.page || 1;
     const perPage = 30;
@@ -172,6 +197,7 @@ const UserGetProducts = (req, res, next) => {
                 .populate("set", {
                     setName: 1,
                 })
+                .sort(sort)
                 .skip((currentPage - 1) * perPage)
                 .limit(perPage);
         })
@@ -410,11 +436,39 @@ const UpdateProductSummaries = (req, res, next) => {
 
 const GetProductSummaries = async (req, res, next) => {
 
-    await createProductSummaries()
+    // await createProductSummaries()
 
     let query = {}
     if (req.userType && req.userType == 2) {
         query.account = req.userId
+    }
+    if (req.query.summaryNumber) {
+        query.summaryNumber = req.query.summaryNumber
+    }
+    if (req.query.paymentStatus) {
+        query.paymentStatus = req.query.paymentStatus
+    }
+    if (req.query.summaryMonth) {
+        query.summaryMonth = req.query.summaryMonth
+    }
+    let dataDate = null
+    if (req.query.createdAt) {
+        dataDate = req.query.createdAt.split(":")
+        date = moment(dataDate[0]).subtract(7, 'hours').format("YYYY-MM-DD")
+        date2 = moment(dataDate[1]).format("YYYY-MM-DD")
+        query.createdAt = {
+            $gte: new Date(`${date} 17:00:00`),
+            $lte: new Date(`${date2} 16:59:59`)
+        }
+    }
+    let sort = {
+        createdAt: -1
+    }
+    if (req.query.sortBy) {
+        let sortBy = req.query.sortBy
+        sort = {
+            [sortBy]: req.query.sortType || -1
+        }
     }
     const currentPage = req.query.page || 1;
     const perPage = 30;
@@ -427,6 +481,7 @@ const GetProductSummaries = async (req, res, next) => {
                 .populate("account")
                 .populate("products.product")
                 .populate("products.order")
+                .sort(sort)
                 .skip((currentPage - 1) * perPage)
                 .limit(perPage);
         })
@@ -453,9 +508,26 @@ const GetProductSummaries = async (req, res, next) => {
 
 }
 
-const createProductSummaries = async () => {
-    let month = moment().format("M")
+const CreateProductSummariesManual = (req, res, next) => {
+    const errors = validationResult(req);
+    if (req.userType != 'admin') {
+        req.body.summaryMonth
+        createProductSummaries(req.body.month || null, req.body.year || null)
+        res.status(200).json({
+            message: 'Successfully.',
+        });
+    } else {
+        const error = new Error('Permission denied.');
+        error.statusCode = 403;
+        throw error;
+    }
+}
+
+const createProductSummaries = async (month, year) => {
+    month = month || moment().format("M")
+    year = year || moment().format("YYYY")
     // month = "9"
+    // console.log(parseInt(month), " ", parseInt(year))
     const orderProduct = await OrderProduct.aggregate([
         {
             $match: {
@@ -486,12 +558,16 @@ const createProductSummaries = async () => {
                 price: 1,
                 discount: 1,
                 total: 1,
-                order: 1, orderCompletetDate: 1, "month": { $month: '$orderCompletetDate' }
+                order: 1,
+                orderCompletetDate: 1,
+                "month": { $month: '$orderCompletetDate' },
+                "year": { $year: "$orderCompletetDate" },
             }
         },
         {
             $match: {
-                month: parseInt(month)
+                month: parseInt(month),
+                year: parseInt(year)
             }
         },
     ]);
@@ -608,4 +684,5 @@ module.exports = {
     UpdateProductSummaries,
     UserGetProducts,
     UserGetProduct,
+    CreateProductSummariesManual
 }

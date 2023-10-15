@@ -148,7 +148,15 @@ const GetOrders = (req, res, next) => {
             $lte: new Date(`${date2} 16:59:59`)
         }
     }
-
+    let sort = {
+        createdAt: -1
+    }
+    if (req.query.sortBy) {
+        let sortBy = req.query.sortBy
+        sort = {
+            [sortBy]: req.query.sortType || -1
+        }
+    }
     // console.log(query)
     const currentPage = req.query.page || 1;
     const perPage = 30;
@@ -162,6 +170,7 @@ const GetOrders = (req, res, next) => {
                     password: 0
                 })
                 .populate("paymentDetail.product", noFile)
+                .sort(sort)
                 .skip((currentPage - 1) * perPage)
                 .limit(perPage);
         })
