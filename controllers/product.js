@@ -510,7 +510,8 @@ const GetProductSummaries = async (req, res, next) => {
 
 const CreateProductSummariesManual = (req, res, next) => {
     const errors = validationResult(req);
-    if (req.userType != 'admin') {
+    // console.log(req.userType)
+    if (req.userType == 'admin') {
         req.body.summaryMonth
         createProductSummaries(req.body.month || null, req.body.year || null)
         res.status(200).json({

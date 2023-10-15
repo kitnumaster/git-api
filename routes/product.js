@@ -31,7 +31,7 @@ router.put('/my-product/:productId', isAuth,
 router.put('/product/:productId', isAuth,
     UpdateProduct)
 router.get('/product-summaries', isAuth, GetProductSummaries)
-router.post('/product-summaries',  CreateProductSummariesManual)
+router.post('/product-summaries', isAuth, CreateProductSummariesManual)
 router.put('/product-summaries/:productSummaryId', isAuth,
     UpdateProductSummaries)
 
