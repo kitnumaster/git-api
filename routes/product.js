@@ -14,6 +14,10 @@ const {
     UserGetProducts,
     UserGetProduct,
     CreateProductSummariesManual,
+    UserGetProductsHomepage,
+    AddProductFavorite,
+    DeleteProductFavorite,
+    GetProductFavorites,
 } = require('../controllers/product')
 
 
@@ -24,6 +28,8 @@ router.post(
     CreateProduct
 )
 router.get('/products', UserGetProducts)
+router.get('/products-shop', UserGetProducts)
+router.get('/products-homepage', UserGetProductsHomepage)
 router.get('/my-products', isAuth, GetProducts)
 router.get('/product/:productId', getInfo, UserGetProduct)
 router.put('/my-product/:productId', isAuth,
@@ -34,5 +40,8 @@ router.get('/product-summaries', isAuth, GetProductSummaries)
 router.post('/product-summaries', isAuth, CreateProductSummariesManual)
 router.put('/product-summaries/:productSummaryId', isAuth,
     UpdateProductSummaries)
+router.post('/products-fav', isAuth, AddProductFavorite)
+router.get('/products-fav', isAuth, GetProductFavorites)
+router.delete('/products-fav/:productId', isAuth, DeleteProductFavorite)
 
 module.exports = router

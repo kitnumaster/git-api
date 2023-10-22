@@ -8,6 +8,8 @@ const Product = require('../models/product')
 const OrderProduct = require('../models/orderProduct')
 const ProductSummaries = require('../models/productSummaries')
 const ProductViewLog = require('../models/log/productViewLog')
+const Designer = require('../models/account')
+const ProductFavorite = require('../models/product-favorite')
 
 const CreateProduct = (req, res, next) => {
     const errors = validationResult(req);
@@ -145,6 +147,31 @@ const UserGetProducts = (req, res, next) => {
     if (req.query.productNameTH) {
         query.productNameTH = req.query.productNameTH
     }
+    if (req.query.sold) {
+        query.sold = req.query.sold
+    }
+    if (req.query.material) {
+        query.material = req.query.material
+    }
+    if (req.query.housing) {
+        query.housing = req.query.housing
+    }
+    if (req.query.trend) {
+        query.trend = req.query.trend
+    }
+    if (req.query.fileType) {
+        query.fileType = req.query.fileType
+    }
+    if (req.query.jewerlyType) {
+        query.jewerlyType = req.query.jewerlyType
+    }
+    if (req.query.price) {
+        let priceRang = req.query.price.split(":")
+        query.price = {
+            $gte: priceRang[0],
+            $lte: priceRang[1]
+        }
+    }
     let dataDate = null
     if (req.query.createdAt) {
         dataDate = req.query.createdAt.split(":")
@@ -214,6 +241,151 @@ const UserGetProducts = (req, res, next) => {
             }
             next(err)
         })
+}
+
+const UserGetProductsHomepage = async (req, res, next) => {
+
+    let newProducts = await Product.find({ sold: false })
+        .populate("account", {
+            firstName: 1,
+            lastName: 1
+        })
+        .populate("material", {
+            materialName: 1,
+        })
+        .populate("housing", {
+            housingName: 1,
+        })
+        .populate("trend", {
+            trendName: 1,
+        })
+        .populate("fileType", {
+            fileTypeName: 1,
+        })
+        .populate("jewerlyType", {
+            jewerlyTypeName: 1,
+        })
+        .populate("detail", {
+            detailName: 1,
+        })
+        .populate("set", {
+            setName: 1,
+        })
+        .sort({ createdAt: -1 })
+        .skip(1)
+        .limit(8)
+
+    let viewProducts = await Product.find({ sold: false })
+        .populate("account", {
+            firstName: 1,
+            lastName: 1
+        })
+        .populate("material", {
+            materialName: 1,
+        })
+        .populate("housing", {
+            housingName: 1,
+        })
+        .populate("trend", {
+            trendName: 1,
+        })
+        .populate("fileType", {
+            fileTypeName: 1,
+        })
+        .populate("jewerlyType", {
+            jewerlyTypeName: 1,
+        })
+        .populate("detail", {
+            detailName: 1,
+        })
+        .populate("set", {
+            setName: 1,
+        })
+        .sort({ views: -1 })
+        .skip(1)
+        .limit(4)
+
+    let discountProducts = await Product.find({ sold: false, discount: { $exists: true }, discount: { $ne: 0 } })
+        .populate("account", {
+            firstName: 1,
+            lastName: 1
+        })
+        .populate("material", {
+            materialName: 1,
+        })
+        .populate("housing", {
+            housingName: 1,
+        })
+        .populate("trend", {
+            trendName: 1,
+        })
+        .populate("fileType", {
+            fileTypeName: 1,
+        })
+        .populate("jewerlyType", {
+            jewerlyTypeName: 1,
+        })
+        .populate("detail", {
+            detailName: 1,
+        })
+        .populate("set", {
+            setName: 1,
+        })
+        .sort({ createdAt: -1 })
+        .skip(1)
+        .limit(4)
+
+    const hotProducts = []
+
+    const designer = await Designer.find({ userType: 2 }, {
+        _id: 1
+    })
+        .sort({ views: -1 })
+        .skip(1)
+        .limit(4)
+
+    for (let i of designer) {
+
+        let hot = await Product.findOne({ sold: false, account: i._id })
+            .populate("account", {
+                firstName: 1,
+                lastName: 1
+            })
+            .populate("material", {
+                materialName: 1,
+            })
+            .populate("housing", {
+                housingName: 1,
+            })
+            .populate("trend", {
+                trendName: 1,
+            })
+            .populate("fileType", {
+                fileTypeName: 1,
+            })
+            .populate("jewerlyType", {
+                jewerlyTypeName: 1,
+            })
+            .populate("detail", {
+                detailName: 1,
+            })
+            .populate("set", {
+                setName: 1,
+            })
+            .sort({ views: -1 })
+
+        hotProducts.push(hot)
+    }
+
+
+    res.status(200).json({
+        message: 'Fetched successfully.',
+        newProducts: newProducts,
+        viewProducts: viewProducts,
+        discountProducts: discountProducts,
+        hotProducts: hotProducts
+    });
+
 }
 
 const GetProduct = (req, res, next) => {
@@ -676,6 +848,101 @@ const AddProductViewLog = async (account, productId, IP) => {
 
 }
 
+const AddProductFavorite = (req, res, next) => {
+    console.log(req.body)
+    const account = req.userId
+    const product = req.body.product
+
+    ProductFavorite.findOne({
+        account: account,
+        product: product
+    })
+        .then(async productFavorite => {
+            if (!productFavorite) {
+
+                const productFav = new ProductFavorite({
+                    account: account,
+                    product: product
+                })
+                await productFav
+                    .save()
+
+            }
+            res.status(200).json({
+                message: 'Successfully.',
+            })
+        })
+
+
+}
+
+const DeleteProductFavorite = (req, res, next) => {
+
+    const account = req.userId
+    const product = req.params.productId
+
+    ProductFavorite.findOne({
+        account: account,
+        product: product
+    })
+        .then(async productFavorite => {
+            // console.log(productFavorite)
+            if (productFavorite) {
+                await ProductFavorite.findByIdAndRemove(productFavorite._id);
+            }
+
+            return true
+        })
+        .then(result => {
+            // console.log(result);
+            res.status(200).json({ message: 'Deleted.' });
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        });
+
+
+}
+
+const GetProductFavorites = (req, res, next) => {
+
+    let query = {}
+    if (req.userType && req.userType == 2) {
+        query.account = req.userId
+    }
+    const currentPage = req.query.page || 1;
+    const perPage = 30;
+    let totalItems;
+    ProductFavorite.find(query)
+        .countDocuments()
+        .then(count => {
+            totalItems = count;
+            return ProductFavorite.find(query)
+                .populate("account", {
+                    password: 0
+                })
+                .populate("product")
+                .skip((currentPage - 1) * perPage)
+                .limit(perPage);
+        })
+        .then(productFavorites => {
+            res.status(200).json({
+                message: 'Fetched successfully.',
+                productFavorites: productFavorites,
+                totalItems: totalItems,
+            });
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500
+            }
+            next(err)
+        })
+}
+
 module.exports = {
     CreateProduct,
     GetProducts,
@@ -685,5 +952,9 @@ module.exports = {
     UpdateProductSummaries,
     UserGetProducts,
     UserGetProduct,
-    CreateProductSummariesManual
+    CreateProductSummariesManual,
+    UserGetProductsHomepage,
+    AddProductFavorite,
+    DeleteProductFavorite,
+    GetProductFavorites,
 }

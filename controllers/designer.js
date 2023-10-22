@@ -2,6 +2,7 @@ const { validationResult } = require('express-validator/check')
 const Account = require('../models/account')
 const Product = require('../models/product')
 const DesignerViewLog = require('../models/log/designerViewLog')
+const DesignerFavorite = require('../models/designer-favorite')
 
 const GetDesigners = (req, res, next) => {
 
@@ -144,7 +145,108 @@ const AddDesignerViewLog = async (account, designerId, IP) => {
 
 }
 
+const AddDesignerFavorite = (req, res, next) => {
+    console.log(req.body)
+    const account = req.userId
+    const designer = req.body.designer
+
+    DesignerFavorite.findOne({
+        account: account,
+        designer: designer
+    })
+        .then(async designerFavorite => {
+            if (!designerFavorite) {
+
+                const designerFav = new DesignerFavorite({
+                    account: account,
+                    designer: designer
+                })
+                await designerFav
+                    .save()
+
+            }
+            res.status(200).json({
+                message: 'Successfully.',
+            })
+        })
+
+
+}
+
+const DeleteDesignerFavorite = (req, res, next) => {
+
+    const account = req.userId
+    const designer = req.params.designerId
+
+    DesignerFavorite.findOne({
+        account: account,
+        designer: designer
+    })
+        .then(async designerFavorite => {
+            // console.log(designerFavorite)
+            if (designerFavorite) {
+                await DesignerFavorite.findByIdAndRemove(designerFavorite._id);
+            }
+
+            return true
+        })
+        .then(result => {
+            // console.log(result);
+            res.status(200).json({ message: 'Deleted.' });
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
+        });
+
+
+}
+
+const GetDesignerFavorites = (req, res, next) => {
+
+    let query = {}
+    if (req.userType && req.userType == 2) {
+        query.account = req.userId
+    }
+    const currentPage = req.query.page || 1;
+    const perPage = 30;
+    let totalItems;
+    DesignerFavorite.find(query)
+        .countDocuments()
+        .then(count => {
+            totalItems = count;
+            return DesignerFavorite.find(query)
+                .populate("account", {
+                    password: 0
+                })
+                .populate("designer", {
+                    password: 0
+                })
+                .skip((currentPage - 1) * perPage)
+                .limit(perPage);
+        })
+        .then(designerFavorites => {
+            res.status(200).json({
+                message: 'Fetched successfully.',
+                designerFavorites: designerFavorites,
+                totalItems: totalItems,
+            });
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500
+            }
+            next(err)
+        })
+}
+
+
 module.exports = {
     GetDesigners,
-    GetDesigner
+    GetDesigner,
+    AddDesignerFavorite,
+    DeleteDesignerFavorite,
+    GetDesignerFavorites,
 }
