@@ -21,7 +21,7 @@ router.post(
     ],
     CreateDesignerLevel
 )
-router.get('/designer-levels', isAuth, GetDesignerLevels)
+router.get('/designer-levels', GetDesignerLevels)
 router.get('/designer-level/:designerLevelId', isAuth, GetDesignerLevel)
 router.put('/designer-level/:designerLevelId', isAuth,
     [
