@@ -21,7 +21,7 @@ router.post(
     ],
     CreateDetail
 )
-router.get('/details', isAuth, GetDetails)
+router.get('/details', GetDetails)
 router.get('/detail/:detailId', isAuth, GetDetail)
 router.put('/detail/:detailId', isAuth,
     [

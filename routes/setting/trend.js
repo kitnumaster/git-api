@@ -21,7 +21,7 @@ router.post(
     ],
     CreateTrend
 )
-router.get('/trends', isAuth, GetTrends)
+router.get('/trends', GetTrends)
 router.get('/trend/:trendId', isAuth, GetTrend)
 router.put('/trend/:trendId', isAuth,
     [

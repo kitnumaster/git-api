@@ -21,7 +21,7 @@ router.post(
     ],
     CreateFileType
 )
-router.get('/file-types', isAuth, GetFileTypes)
+router.get('/file-types', GetFileTypes)
 router.get('/file-type/:fileTypeId', isAuth, GetFileType)
 router.put('/file-type/:fileTypeId', isAuth,
     [

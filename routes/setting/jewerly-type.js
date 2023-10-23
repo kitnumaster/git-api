@@ -21,7 +21,7 @@ router.post(
     ],
     CreateJewerlyType
 )
-router.get('/jewerly-types', isAuth, GetJewerlyTypes)
+router.get('/jewerly-types', GetJewerlyTypes)
 router.get('/jewerly-type/:jewerlyTypeId', isAuth, GetJewerlyType)
 router.put('/jewerly-type/:jewerlyTypeId', isAuth,
     [

@@ -21,7 +21,7 @@ router.post(
     ],
     CreateMaterial
 )
-router.get('/materials', isAuth, GetMaterials)
+router.get('/materials', GetMaterials)
 router.get('/material/:materialId', isAuth, GetMaterial)
 router.put('/material/:materialId', isAuth,
     [

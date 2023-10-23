@@ -21,7 +21,7 @@ router.post(
     ],
     CreateSet
 )
-router.get('/sets', isAuth, GetSets)
+router.get('/sets', GetSets)
 router.get('/set/:setId', isAuth, GetSet)
 router.put('/set/:setId', isAuth,
     [

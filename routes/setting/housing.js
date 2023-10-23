@@ -21,7 +21,7 @@ router.post(
     ],
     CreateHousing
 )
-router.get('/housings', isAuth, GetHousings)
+router.get('/housings', GetHousings)
 router.get('/housing/:housingId', isAuth, GetHousing)
 router.put('/housing/:housingId', isAuth,
     [
