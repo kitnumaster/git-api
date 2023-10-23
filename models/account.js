@@ -67,7 +67,9 @@ const accountSchema = new Schema(
       type: Number
     },
     designerLevel: {
-      type: Number
+      type: Schema.Types.ObjectId,
+      index: true,
+      ref: "DesignerLevel"
     },
     company: {
       type: String
