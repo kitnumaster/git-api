@@ -37,11 +37,11 @@ const CreateJewerlyType = (req, res, next) => {
 }
 
 const GetJewerlyTypes = (req, res, next) => {
-    if (req.userType != 'admin') {
-        const error = new Error('Permission denied.');
-        error.statusCode = 403;
-        throw error;
-    }
+    // if (req.userType != 'admin') {
+    //     const error = new Error('Permission denied.');
+    //     error.statusCode = 403;
+    //     throw error;
+    // }
     JewerlyType.find({})
         .then(jewerlyTypes => {
             res.status(200).json({

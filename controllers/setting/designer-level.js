@@ -37,11 +37,11 @@ const CreateDesignerLevel = (req, res, next) => {
 }
 
 const GetDesignerLevels = (req, res, next) => {
-    if (req.userType != 'admin') {
-        const error = new Error('Permission denied.');
-        error.statusCode = 403;
-        throw error;
-    }
+    // if (req.userType != 'admin') {
+    //     const error = new Error('Permission denied.');
+    //     error.statusCode = 403;
+    //     throw error;
+    // }
     let query = {}
     let dataDate = null
     if (req.query.createdAt) {

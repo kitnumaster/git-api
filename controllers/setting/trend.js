@@ -37,11 +37,11 @@ const CreateTrend = (req, res, next) => {
 }
 
 const GetTrends = (req, res, next) => {
-    if (req.userType != 'admin') {
-        const error = new Error('Permission denied.');
-        error.statusCode = 403;
-        throw error;
-    }
+    // if (req.userType != 'admin') {
+    //     const error = new Error('Permission denied.');
+    //     error.statusCode = 403;
+    //     throw error;
+    // }
     Trend.find({})
         .then(trends => {
             res.status(200).json({

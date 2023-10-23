@@ -37,11 +37,11 @@ const CreateDetail = (req, res, next) => {
 }
 
 const GetDetails = (req, res, next) => {
-    if (req.userType != 'admin') {
-        const error = new Error('Permission denied.');
-        error.statusCode = 403;
-        throw error;
-    }
+    // if (req.userType != 'admin') {
+    //     const error = new Error('Permission denied.');
+    //     error.statusCode = 403;
+    //     throw error;
+    // }
     Detail.find({})
         .then(details => {
             res.status(200).json({

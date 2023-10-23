@@ -37,11 +37,11 @@ const CreateMaterial = (req, res, next) => {
 }
 
 const GetMaterials = (req, res, next) => {
-    if (req.userType != 'admin') {
-        const error = new Error('Permission denied.');
-        error.statusCode = 403;
-        throw error;
-    }
+    // if (req.userType != 'admin') {
+    //     const error = new Error('Permission denied.');
+    //     error.statusCode = 403;
+    //     throw error;
+    // }
     Material.find({})
         .then(materials => {
             res.status(200).json({

@@ -37,11 +37,11 @@ const CreateHousing = (req, res, next) => {
 }
 
 const GetHousings = (req, res, next) => {
-    if (req.userType != 'admin') {
-        const error = new Error('Permission denied.');
-        error.statusCode = 403;
-        throw error;
-    }
+    // if (req.userType != 'admin') {
+    //     const error = new Error('Permission denied.');
+    //     error.statusCode = 403;
+    //     throw error;
+    // }
     Housing.find({})
         .then(housings => {
             res.status(200).json({

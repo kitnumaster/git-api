@@ -37,11 +37,11 @@ const CreateSet = (req, res, next) => {
 }
 
 const GetSets = (req, res, next) => {
-    if (req.userType != 'admin') {
-        const error = new Error('Permission denied.');
-        error.statusCode = 403;
-        throw error;
-    }
+    // if (req.userType != 'admin') {
+    //     const error = new Error('Permission denied.');
+    //     error.statusCode = 403;
+    //     throw error;
+    // }
     Set.find({})
         .then(sets => {
             res.status(200).json({

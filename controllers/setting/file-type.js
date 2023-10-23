@@ -37,11 +37,11 @@ const CreateFileType = (req, res, next) => {
 }
 
 const GetFileTypes = (req, res, next) => {
-    if (req.userType != 'admin') {
-        const error = new Error('Permission denied.');
-        error.statusCode = 403;
-        throw error;
-    }
+    // if (req.userType != 'admin') {
+    //     const error = new Error('Permission denied.');
+    //     error.statusCode = 403;
+    //     throw error;
+    // }
     FileType.find({})
         .then(fileTypes => {
             res.status(200).json({
