@@ -245,7 +245,7 @@ const UserGetProducts = (req, res, next) => {
 
 const UserGetProductsHomepage = async (req, res, next) => {
 
-    let newProducts = await Product.find({ sold: false })
+    let newProducts = await Product.find({ sold: false, active: true })
         .populate("account", {
             firstName: 1,
             lastName: 1
@@ -275,7 +275,7 @@ const UserGetProductsHomepage = async (req, res, next) => {
         .skip(1)
         .limit(8)
 
-    let viewProducts = await Product.find({ sold: false })
+    let viewProducts = await Product.find({ sold: false, active: true })
         .populate("account", {
             firstName: 1,
             lastName: 1
@@ -305,7 +305,7 @@ const UserGetProductsHomepage = async (req, res, next) => {
         .skip(1)
         .limit(4)
 
-    let discountProducts = await Product.find({ sold: false, discount: { $exists: true }, discount: { $ne: 0 } })
+    let discountProducts = await Product.find({ sold: false, active: true, discount: { $exists: true }, discount: { $ne: 0 } })
         .populate("account", {
             firstName: 1,
             lastName: 1
@@ -346,7 +346,7 @@ const UserGetProductsHomepage = async (req, res, next) => {
 
     for (let i of designer) {
 
-        let hot = await Product.findOne({ sold: false, account: i._id })
+        let hot = await Product.findOne({ sold: false, active: true, account: i._id })
             .populate("account", {
                 firstName: 1,
                 lastName: 1

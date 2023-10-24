@@ -69,7 +69,7 @@ const GetDesigner = (req, res, next) => {
             AddDesignerViewLog(req.userId || null, designerId, req.ipAddresses || null)
 
             products = await Product.find({
-                account: designerId
+                account: designerId, active: true
             }, {
                 "files": 0
             })
