@@ -150,6 +150,9 @@ const UserGetProducts = (req, res, next) => {
     if (req.query.sold) {
         query.sold = req.query.sold
     }
+    if (req.query.active) {
+        query.active = req.query.active
+    }
     if (req.query.material) {
         query.material = req.query.material
     }
