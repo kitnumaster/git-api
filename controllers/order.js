@@ -199,7 +199,7 @@ const GetOrder = (req, res, next) => {
     const orderId = req.params.orderId
     let noFile = null
     if (req.userType != "admin") {
-        query.account = req.userId
+        // query.account = req.userId
         noFile = { files: 0 }
     }
     Order.findById(orderId)
