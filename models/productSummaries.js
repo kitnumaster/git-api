@@ -9,8 +9,8 @@ const productSummarySchema = new Schema(
             index: true,
             ref: 'Account'
         },
-        transaction:{
-            type:String
+        transaction: {
+            type: String
         },
         summaryNumber: {
             type: String,
@@ -41,6 +41,12 @@ const productSummarySchema = new Schema(
         paymentStatus: {
             type: Number,//1 รอหลักฐาน 2 แนบหลักฐานรอยื่ยัน 3 ยืนยัน 4 reject 5 cancel
             index: true
+        },
+        tranferFee: {
+            type: Number
+        },
+        transferAmount: {
+            type: Number
         },
         paymentTranferDate: {
             type: Date,

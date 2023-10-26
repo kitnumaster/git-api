@@ -19,9 +19,9 @@ const CreateCart = async (req, res, next) => {
         const product = await Product.findById(req.body.product)
         // console.log(product)
         let price = new Big(product.price)
-        body.price = price.toFixed(2)
         body.discount = product.discount ? product.discount.toFixed(2) : 0.00
-        body.total = price.minus(body.discount).toFixed(2)
+        body.price = price.plus(body.discount).toFixed(2)
+        body.total = price.toFixed(2)
         Cart.findOne({
             account: accountId,
             product: req.body.product
