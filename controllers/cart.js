@@ -1,6 +1,7 @@
 const { validationResult } = require('express-validator/check')
 const Cart = require('../models/cart')
 const Product = require('../models/product')
+const Account = require('../models/account')
 const Big = require('big.js');
 
 
@@ -68,11 +69,26 @@ const GetCarts = (req, res, next) => {
             totalItems = count;
             let list = await Cart.find(query)
                 .populate("product")
+            let newList = []
             for (let i of list) {
+                let designer = await Account.findOne({
+                    _id: i.product.account
+                }, {
+                    firstName: 1,
+                    lastName: 1
+                })
+                // console.log(designer.firstName)
                 totalDiscount = totalPrice.plus(Number(i.discount))
                 totalPrice = totalPrice.plus(Number(i.price))
+                newList.push({
+                    ...i._doc,
+                    designer: {
+                        irstName: designer.firstName,
+                        lastName: designer.lastName
+                    }
+                })
             }
-            return list
+            return newList
         })
         .then(carts => {
             res.status(200).json({

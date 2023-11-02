@@ -4,6 +4,7 @@ const OrderProduct = require('../models/orderProduct')
 const Product = require('../models/product')
 const Big = require('big.js');
 const ProductDownloadLog = require('../models/log/productDownloadLog');
+const FileType = require('../models/setting/file-type');
 
 const zeroFill = (number, width) => {
     width -= number.toString().length;
@@ -170,11 +171,29 @@ const GetOrders = (req, res, next) => {
                     password: 0
                 })
                 .populate("paymentDetail.product", noFile)
+                .populate("paymentDetail.account", {
+                    firstName: 1,
+                    lastName: 1
+                })
                 .sort(sort)
                 .skip((currentPage - 1) * perPage)
                 .limit(perPage);
         })
-        .then(orders => {
+        .then(async orders => {
+
+            for (let i of orders) {
+                // 
+                for (let l of i.paymentDetail) {
+                    // console.log(l.product.fileType)
+                    let fileType = await FileType.find({
+                        _id: {
+                            $in: l.product.fileType
+                        }
+                    })
+                    l.product.fileType = fileType
+                }
+            }
+
             res.status(200).json({
                 message: 'Fetched successfully.',
                 orders: orders.map(i => {
@@ -364,7 +383,9 @@ const UpdateOrder = (req, res, next) => {
 
 const GetOrderProductOrders = async (req, res, next) => {
 
-    let query = {}
+    let query = {
+        orderStatus: 2
+    }
     if (req.userType != "admin") {
         query.account = req.userId
     }
@@ -381,6 +402,9 @@ const GetOrderProductOrders = async (req, res, next) => {
                 .populate("account")
                 .populate("order", {
                     orderNumber: 1,
+                })
+                .populate("product", {
+                    files: 0,
                 })
                 .skip((currentPage - 1) * perPage)
                 .limit(perPage);
