@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const Account = require('../models/account');
 const LoginLog = require('../models/log/loginLog')
+const emailCtr = require('./email')
 
 exports.signup = (req, res, next) => {
   const errors = validationResult(req);
@@ -140,6 +141,11 @@ exports.AccountSignup = (req, res, next) => {
         password: hashedPw,
         userName: userName
       });
+
+      //send email
+      //admin user
+      emailCtr.NewUser(email)
+
       return account.save();
     })
     .then(result => {

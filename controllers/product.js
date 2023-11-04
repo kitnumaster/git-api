@@ -10,6 +10,8 @@ const ProductSummaries = require('../models/productSummaries')
 const ProductViewLog = require('../models/log/productViewLog')
 const Designer = require('../models/account')
 const ProductFavorite = require('../models/product-favorite')
+const Account = require('../models/account')
+const emailCtr = require('./email')
 
 const CreateProduct = (req, res, next) => {
     const errors = validationResult(req);
@@ -589,6 +591,12 @@ const UpdateProductSummaries = (req, res, next) => {
                     }, {
                         paymentStatus: 2
                     })
+
+                    //send email
+                    let getMailAccount = await Account.findById(order.account, {
+                        email: 1
+                    })
+                    emailCtr.ApproveDesignerOrderTranfer(getMailAccount.email)
                 }
 
                 return ProductSummaries.findByIdAndUpdate(productSummaryId, update, { new: true })

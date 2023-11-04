@@ -2,9 +2,11 @@ const { validationResult } = require('express-validator/check')
 const Order = require('../models/order')
 const OrderProduct = require('../models/orderProduct')
 const Product = require('../models/product')
+const Account = require('../models/account')
 const Big = require('big.js');
 const ProductDownloadLog = require('../models/log/productDownloadLog');
 const FileType = require('../models/setting/file-type');
+const emailCtr = require('./email')
 
 const zeroFill = (number, width) => {
     width -= number.toString().length;
@@ -91,6 +93,12 @@ const CreateOrder = async (req, res, next) => {
         order
             .save()
             .then(async result => {
+
+                //send email
+                let getMailAccount = await Account.findById(accountId, {
+                    email: 1
+                })
+                emailCtr.NewOrder(getMailAccount.email)
 
                 for (let i of order.paymentDetail) {
                     let orderP = new OrderProduct({
@@ -343,6 +351,14 @@ const UpdateOrder = (req, res, next) => {
                 throw error;
             }
 
+            if (update.paymentStatus == 2) {
+                //send email
+                let getMailAccount = await Account.findById(order.account, {
+                    email: 1
+                })
+                emailCtr.OrderTranfer(getMailAccount.email)
+            }
+
             if (update.paymentStatus && update.paymentStatus == 3) {
                 let paymentCompleteDate = Date.now()
                 update.paymentCompleteDate = paymentCompleteDate
@@ -366,6 +382,12 @@ const UpdateOrder = (req, res, next) => {
                     }, {
                     sold: true,
                 })
+
+                //send email
+                let getMailAccount = await Account.findById(order.account, {
+                    email: 1
+                })
+                emailCtr.ApproveOrderTranfer(getMailAccount.email)
             }
 
             return Order.findByIdAndUpdate(orderId, update, { new: true })

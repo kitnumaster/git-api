@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator/check')
 const Account = require('../models/account')
+const emailCtr = require('./email')
 
 const GetAccounts = (req, res, next) => {
     // console.log(req)
@@ -116,6 +117,11 @@ const UpdateAccount = (req, res, next) => {
             }
 
             // console.log(update)
+            if(update.requestDesigner){
+
+                emailCtr.RegisterDesigner(account.email)
+
+            }
 
             return Account.findByIdAndUpdate(accountId, update, { new: true })
         })
@@ -151,7 +157,8 @@ const ApproveAccount = (req, res, next) => {
 
                 account.userType = userType
                 account.approveAt = new Date()
-
+                //send email
+                emailCtr.ApproveDesigner(account.email)
                 return account.save()
             })
             .then(result => {
