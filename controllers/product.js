@@ -136,6 +136,10 @@ const UserGetProducts = (req, res, next) => {
     let query = {
         sold: false
     }
+
+    if (req.userType && req.userType == 'admin') {
+        query = {}
+    }
     if (req.userType && req.userType == 2) {
         query.account = req.userId
     }

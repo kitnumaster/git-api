@@ -7,6 +7,9 @@ const accountSchema = new Schema(
       type: Number,
       default: 1,//1=customer, 2=designer
     },
+    acceptPolicy: [{
+      type: String,
+    }],
     avatar: {
       type: String
     },

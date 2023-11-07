@@ -9,6 +9,9 @@ const orderSchema = new Schema(
             index: true,
             ref: 'Account'
         },
+        acceptPolicy: [{
+            type: String,
+        }],
         orderNumber: {
             type: String,
             index: true

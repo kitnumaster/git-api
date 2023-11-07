@@ -27,7 +27,7 @@ router.post(
     isAuth,
     CreateProduct
 )
-router.get('/products', UserGetProducts)
+router.get('/products', getInfo, UserGetProducts)
 router.get('/products-shop', UserGetProducts)
 router.get('/products-homepage', UserGetProductsHomepage)
 router.get('/my-products', isAuth, GetProducts)

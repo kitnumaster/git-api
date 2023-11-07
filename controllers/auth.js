@@ -133,13 +133,15 @@ exports.AccountSignup = (req, res, next) => {
   const email = req.body.email;
   const userName = req.body.userName;
   const password = req.body.password;
+  const acceptPolicy = req.body.acceptPolicy;
   bcrypt
     .hash(password, 12)
     .then(hashedPw => {
       const account = new Account({
         email: email,
         password: hashedPw,
-        userName: userName
+        userName: userName,
+        acceptPolicy: acceptPolicy,
       });
 
       //send email
