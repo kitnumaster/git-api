@@ -19,7 +19,7 @@ router.post(
     isAuth,
     CreateHomePage
 )
-router.get('/home-page-lists', getInfo, GetHomePageLists)
+router.get('/home-page-lists', GetHomePageLists)
 router.get('/home-page/:homePageId', getInfo, GetHomePage)
 router.put('/home-page/:homePageId', isAuth,
     UpdateHomePage)

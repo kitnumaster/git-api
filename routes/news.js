@@ -19,8 +19,8 @@ router.post(
     isAuth,
     CreateNews
 )
-router.get('/news-lists', getInfo, GetNewsLists)
-router.get('/news/:newsId', getInfo, GetNews)
+router.get('/news-lists', GetNewsLists)
+router.get('/news/:newsId', GetNews)
 router.put('/news/:newsId', isAuth,
     UpdateNews)
 router.delete('/news/:newsId', isAuth,

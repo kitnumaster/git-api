@@ -77,13 +77,12 @@ const GetCarts = (req, res, next) => {
                     firstName: 1,
                     lastName: 1
                 })
-                // console.log(designer.firstName)
-                totalDiscount = totalPrice.plus(Number(i.discount))
-                totalPrice = totalPrice.plus(Number(i.price))
+                totalDiscount = totalDiscount.plus(Number(i.product.discount))
+                totalPrice = totalPrice.plus(Number(i.product.price))
                 newList.push({
                     ...i._doc,
                     designer: {
-                        irstName: designer.firstName,
+                        firstName: designer.firstName,
                         lastName: designer.lastName
                     }
                 })
