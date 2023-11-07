@@ -202,7 +202,6 @@ exports.AccountLogin = (req, res, next) => {
 };
 
 exports.GetAdmins = (req, res, next) => {
-
   if (req.userType == 'admin') {
     User.find({})
       .then(details => {
@@ -214,7 +213,7 @@ exports.GetAdmins = (req, res, next) => {
       .catch(err => {
         if (!err.statusCode) {
           err.statusCode = 500
-        } f
+        } 
         next(err)
       })
   } else {
