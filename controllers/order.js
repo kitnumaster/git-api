@@ -431,11 +431,18 @@ const GetOrderProductOrders = async (req, res, next) => {
                 .skip((currentPage - 1) * perPage)
                 .limit(perPage);
         })
-        .then(orderProducts => {
+        .then(async orderProducts => {
+            for (let i of orderProducts) {
+                let fileType = await FileType.find({
+                    _id: {
+                        $in: i.product.fileType
+                    }
+                })
+                i.product.fileType = fileType
+            }
             res.status(200).json({
                 message: 'Fetched successfully.',
                 orderProducts: orderProducts.map(i => {
-                    // console.log(i.order.orderNumber)
                     return {
                         ...i._doc,
                         order: {

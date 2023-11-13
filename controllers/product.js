@@ -474,8 +474,8 @@ const UserGetProduct = (req, res, next) => {
                 throw error;
             }
 
-            AddProductViewLog(req.userId || null, productId, req.ipAddresses || null)
-
+            req.userType == 'admin' ? null : AddProductViewLog(req.userId || null, productId, req.ipAddresses || null)
+            
             res.status(200).json({ message: 'fetched.', product: product })
         })
         .catch(err => {

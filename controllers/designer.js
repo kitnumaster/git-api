@@ -66,7 +66,7 @@ const GetDesigner = (req, res, next) => {
                 throw error;
             }
             loadAccount = account
-            AddDesignerViewLog(req.userId || null, designerId, req.ipAddresses || null)
+            req.userType == 'admin' ? null : AddDesignerViewLog(req.userId || null, designerId, req.ipAddresses || null)
 
             products = await Product.find({
                 account: designerId, active: true
