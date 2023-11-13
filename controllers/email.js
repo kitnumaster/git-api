@@ -14,16 +14,34 @@ const TestSendEmail = async (req, res, next) => {
 }
 
 const SendEmail = async (subject, msg, to, bcc = []) => {
+
+    // Email: webmaster @git.or.th
+    // Password: 2566#Web@th
+    // Host: smtp.office365.com
+    // Port: 587
+    // EnableSsl = True
+    // UseDefaultCredentials = False
+
     const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        // host: "smtp.office365.com",
+        // port: 587,
+        // secure: true,
+        service: "Outlook365",
         auth: {
-            user: 'kitnudrago@gmail.com',
-            pass: 'ebhn eneu nyvd pcgm'
-        }
+            user: 'webmaster@git.or.th',
+            pass: '2566#Web@th'
+        },
+        // tls: {
+        //     ciphers: 'SSLv3'
+        // }
+        // auth: {
+        //     user: 'kitnudrago@gmail.com',
+        //     pass: 'ebhn eneu nyvd pcgm'
+        // }
     })
 
     let mailOptions = {
-        from: 'sender@git.com',
+        from: 'webmaster@git.or.th',
         to: to,
         bcc: bcc,
         subject: subject,
@@ -32,7 +50,7 @@ const SendEmail = async (subject, msg, to, bcc = []) => {
 
     await transporter.sendMail(mailOptions, function (err, info) {
         if (err)
-            console.log(err)
+            console.log(err + "err")
         else
             console.log(info)
     })
