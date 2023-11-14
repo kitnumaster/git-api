@@ -36,7 +36,9 @@ const fileStorage = multer.diskStorage({
     cb(null, 'temp');
   },
   filename: (req, file, cb) => {
-    cb(null, new Date().toISOString() + '-' + file.originalname);
+    let filename =  (new Date().toISOString() + '-' + file.originalname).replaceAll(":", "");
+    filename = filename.replaceAll(" ", "-");
+    cb(null,filename);
   }
 });
 
@@ -45,7 +47,11 @@ const fileFilter = (req, file, cb) => {
     file.mimetype === 'image/png' ||
     file.mimetype === 'image/jpg' ||
     file.mimetype === 'image/jpeg' ||
-    file.mimetype === 'application/pdf'
+    file.mimetype === 'image/bmp' ||
+    file.mimetype === 'image/tif' ||
+    file.mimetype === 'image/tiff' ||
+    file.mimetype === 'application/pdf' ||
+    file.mimetype === 'application/octet-stream'
   ) {
     cb(null, true);
   } else {
