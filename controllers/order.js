@@ -7,6 +7,7 @@ const Big = require('big.js');
 const ProductDownloadLog = require('../models/log/productDownloadLog');
 const FileType = require('../models/setting/file-type');
 const emailCtr = require('./email')
+const fs = require('fs')
 
 const zeroFill = (number, width) => {
     width -= number.toString().length;
@@ -464,6 +465,11 @@ const GetOrderProductOrders = async (req, res, next) => {
 }
 
 const DownloadProduct = (req, res, next) => {
+
+    const AdmZip = require("adm-zip")
+
+
+
     const productId = req.params.productId
     let query = {
         'paymentDetail.product': productId
@@ -485,9 +491,37 @@ const DownloadProduct = (req, res, next) => {
             }
         })
         .then(product => {
-            res.status(200).json({
-                product: product
+            console.log(product)
+            const zip = new AdmZip();
+            product.files.forEach(file => {
+                zip.addLocalFile(`./${file.filePath}`)
             });
+            let fileDownload = `./temp/zips/${Number(new Date())}.zip`
+            zip.writeZip(
+                fileDownload,
+                err => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    res.download(
+                        fileDownload,
+                        function (err) {
+                            if (!err) {
+                                //delete file after it's been downloaded
+                                fs.unlinkSync(
+                                    fileDownload
+                                );
+                            }
+                        }
+                    );
+                }
+            );
+            // console.log("Download start...")
+            // const file = `./files/6536a537861237875aab4532/S__35364961_0.jpg`;
+            // res.download(file)
+            // res.status(200).json({
+            //     product: product
+            // });
         })
         .catch(err => {
             if (!err.statusCode) {
