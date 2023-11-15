@@ -137,16 +137,18 @@ exports.AccountSignup = (req, res, next) => {
   bcrypt
     .hash(password, 12)
     .then(hashedPw => {
+      const activateCode = Number(new Date())
       const account = new Account({
         email: email,
         password: hashedPw,
         userName: userName,
         acceptPolicy: acceptPolicy,
+        activateCode: activateCode
       });
 
       //send email
       //admin user
-      emailCtr.NewUser(email)
+      emailCtr.NewUser(email, activateCode)
 
       return account.save();
     })
@@ -169,6 +171,11 @@ exports.AccountLogin = (req, res, next) => {
     .then(user => {
       if (!user) {
         const error = new Error('A user with this email could not be found.');
+        error.statusCode = 401;
+        throw error;
+      }
+      if (user && !user.activate) {
+        const error = new Error('Not yet activated.');
         error.statusCode = 401;
         throw error;
       }
@@ -213,7 +220,7 @@ exports.GetAdmins = (req, res, next) => {
       .catch(err => {
         if (!err.statusCode) {
           err.statusCode = 500
-        } 
+        }
         next(err)
       })
   } else {

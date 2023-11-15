@@ -72,12 +72,11 @@ const getMailAdmin = async () => {
 
 }
 
-const NewUser = async (to) => {
+const NewUser = async (to, activateCode) => {
 
     let adminEmail = await getMailAdmin()
     let subject = "New user"
-    let msg = "New user"
-
+    let msg = "New user link activate : " + 'localhost:3004/account/activate/' + activateCode
     // console.log(adminEmail)
 
     SendEmail(subject, msg, to, adminEmail)

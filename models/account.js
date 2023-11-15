@@ -7,6 +7,13 @@ const accountSchema = new Schema(
       type: Number,
       default: 1,//1=customer, 2=designer
     },
+    activate: {
+      type: Boolean,
+      default: false
+    },
+    activateCode: {
+      type: String,
+    },
     acceptPolicy: [{
       type: String,
     }],

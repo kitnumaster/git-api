@@ -7,7 +7,8 @@ const {
     GetAccounts,
     GetAccount,
     UpdateAccount,
-    ApproveAccount
+    ApproveAccount,
+    ActivateAccount,
 } = require('../controllers/account')
 
 router.get('/accounts', isAuth, GetAccounts)
@@ -25,5 +26,7 @@ router.put('/approve-designer/:accountId', isAuth,
             .isEmpty()
     ],
     ApproveAccount) //admin only
+
+router.get('/account/activate/:activateCode', ActivateAccount)
 
 module.exports = router

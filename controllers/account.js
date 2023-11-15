@@ -117,7 +117,7 @@ const UpdateAccount = (req, res, next) => {
             }
 
             // console.log(update)
-            if(update.requestDesigner){
+            if (update.requestDesigner) {
 
                 emailCtr.RegisterDesigner(account.email)
 
@@ -177,9 +177,38 @@ const ApproveAccount = (req, res, next) => {
     }
 }
 
+const ActivateAccount = (req, res, next) => {
+    let activateCode = null
+    activateCode = req.params.activateCode
+
+    Account.findOne({ activateCode: activateCode })
+        .then(account => {
+            if (!account) {
+                const error = new Error('Could not find.');
+                error.statusCode = 404;
+                throw error;
+            }
+
+            account.activate = true
+            return account.save()
+        })
+        .then(result => {
+            res.status(200).json({ message: 'Updated!', account: result })
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500
+            }
+            next(err);
+        })
+
+
+}
+
 module.exports = {
     GetAccounts,
     GetAccount,
     UpdateAccount,
     ApproveAccount,
+    ActivateAccount,
 }
