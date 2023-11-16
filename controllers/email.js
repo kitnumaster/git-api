@@ -75,19 +75,21 @@ const getMailAdmin = async () => {
 const NewUser = async (to, activateCode) => {
 
     let adminEmail = await getMailAdmin()
-    let subject = "New user"
-    let msg = "New user link activate : " + 'localhost:3004/account/activate/' + activateCode
-    // console.log(adminEmail)
+    let subject = "[GIT Jewely Design Gallery] New User Registration"
+
+    let userFullName = "";
+    let activateUrl = 'http://58.181.138.201:3004/account/activate/' + activateCode;
+    let msg = "Welcome to GIT Jewely Design Gallery, " + userFullName + "." + "<br>" + "Please click the link below to activate your account." + "<br>" + "<br>" + "New user link activate : <a href='"+activateUrl+"'>" + activateUrl + "</a><br>" + "<br>" + "Thank you," + "<br>" + "GIT Jewely Design Gallery Team"
 
     SendEmail(subject, msg, to, adminEmail)
-
 }
 
 const RegisterDesigner = async (to) => {
 
     let adminEmail = await getMailAdmin()
-    let subject = "RegisterDesigner"
-    let msg = "RegisterDesigner"
+    let subject = "[GIT Jewely Design Gallery] Designer Registration"
+    let userFullName = "";
+    let msg = "Hello, " +userFullName+ "<br>" + "<br>" + "You have been registered as a designer in GIT Jewely Design Gallery." + "<br>" + "Please wait for the administrator to approve your registration." + "<br>" + "<br>" + "Thank you," + "<br>" + "GIT Jewely Design Gallery Team"
 
     // console.log(adminEmail)
 
@@ -97,8 +99,9 @@ const RegisterDesigner = async (to) => {
 
 const ApproveDesigner = async (to) => {
 
-    let subject = "ApproveDesigner"
-    let msg = "ApproveDesigner"
+    let subject = "[GIT Jewely Design Gallery] Approve Designer"
+    let userFullName = "";
+    let msg = "Congratulations, " +userFullName+ "<br>" + "<br>" + "you have been approved as a designer in GIT Jewely Design Gallery." + "<br>" + "<br>" + "Thank you," + "<br>" + "GIT Jewely Design Gallery Team"
 
     // console.log(adminEmail)
 
@@ -109,9 +112,22 @@ const ApproveDesigner = async (to) => {
 const NewOrder = async (to) => {
 
     let adminEmail = await getMailAdmin()
-    let subject = "NewOrder"
-    let msg = "NewOrder"
-
+    let subject = "[GIT Jewely Design Gallery] New Order Confirmation"
+    let userFullName = "";
+    let orderId = "";
+    let orderNumber = "";
+    let orderCreateDate = "";
+    let paymentMethod = 1; // 1 = tranfer, 2 = credit card
+    let paymentAmount = "";
+    let PaymentStatus = 1;
+    let paymentConfirmUrl = "http://58.181.138.201/paymentconfirm?order="+orderId;
+    let msg = "Dear, " +userFullName+ "." + "<br>" + "<br>" +"Thank you for your order" + "<br>" + "<br>" + "Your order number is " +orderNumber+ "." + "<br>" + "Order date: " +orderCreateDate+ "." + "<br>" + "<br>"
+        msg += "<br>" + "<br>" + "Payment Method: " +paymentMethod+ "." + "<br>" + "Payment amount: ฿" +paymentAmount+ "."
+        if(paymentMethod == 1){
+            msg += "<br>" + "<br>" + "Please transfer money to the following account." + "<br>" + "<br>" + "Bank: ธนาคารไทยพาณิชย์ สาขาปาโซ่ทาวเวอร์" + "<br>" + "Account Name: สถาบันวิจัยและพัฒนาอัญมีและเครื่องประดับแห่งชาติ (องค์การมหาชน)" + "<br>" + "Account Number: 245-207-440-3"
+            msg += "<br>" + "<br>" + "Please send a copy of the payment slip to confirm the payment." + "<br>" + "<br>" + "<a href='"+paymentConfirmUrl+"'>Confirem payment Click Here</a>"
+        }
+        msg += "<br>" + "<br>" + "Thank you," + "<br>" + "GIT Jewely Design Gallery Team"
     // console.log(adminEmail)
 
     SendEmail(subject, msg, to, adminEmail)
@@ -121,8 +137,13 @@ const NewOrder = async (to) => {
 const OrderTranfer = async (to) => {
 
     let adminEmail = await getMailAdmin()
-    let subject = "OrderTranfer"
-    let msg = "OrderTranfer"
+    let subject = "[GIT Jewely Design Gallery] Payment Confirmation"
+    let orderNumber = "";
+    let orderCreateDate = "";
+    let paymentSlip = "";
+    let paymentDate= "";
+    let paymentAmount= "";
+    let msg = "Payment Confirmation" + "<br>" + "<br>" + "Order number: " +orderNumber+ "." + "<br>" + "Order date: " +orderCreateDate+ "." + "<br>" + "<br>" + "Payment Slip: " +paymentSlip+ "." + "<br>" + "Payment date " +paymentDate+ "." + "<br>" + "Payment amount: ฿" +paymentAmount+ "." + "<br>" + "<br>"+ "Please Check Payment Information and Approve"+ "<br>" + "<br>"+  "Thank you," + "<br>" + "GIT Jewely Design Gallery Team"
 
     // console.log(adminEmail)
 
@@ -132,8 +153,14 @@ const OrderTranfer = async (to) => {
 
 const ApproveOrderTranfer = async (to) => {
 
-    let subject = "ApproveOrderTranfer"
-    let msg = "ApproveOrderTranfer"
+    let subject = "[GIT Jewely Design Gallery] Approve Payment Confirmation" 
+    let userFullName = "";
+    let orderNumber = "";
+    let orderCreateDate = "";
+    let paymentSlip = "";
+    let paymentDate= "";
+    let paymentAmount= "";
+    let msg = "Dear, " +userFullName+ "." + "<br>" + "<br>" + "Your payment has been approved." + "<br>" + "<br>" + "Order number: " +orderNumber+ "." + "<br>" + "Order date: " +orderCreateDate+ "." + "<br>" + "<br>" + "Payment Slip: " +paymentSlip+ "." + "<br>" + "Payment date: " +paymentDate+ "." + "<br>" + "Payment amount: ฿" +paymentAmount+ "." + "<br>" + "<br>"+"Your Can download A Desing in you Order Page"+ "<br>" + "<br>"+ "Thank you," + "<br>" + "GIT Jewely Design Gallery Team"
 
     // console.log(adminEmail)
 
@@ -143,8 +170,15 @@ const ApproveOrderTranfer = async (to) => {
 
 const ApproveDesignerOrderTranfer = async (to) => {
 
-    let subject = "ApproveDesignerOrderTranfer"
-    let msg = "ApproveDesignerOrderTranfer"
+    let subject = "[GIT Jewely Design Gallery] Approve Payment to Designer"
+    let userFullName = "";
+    let orderNumber = "";
+    let orderCreateDate = "";
+    let orderRang = "";
+    let paymentSlip = "";
+    let paymentDate= "";
+    let paymentAmount= "";
+    let msg = "Dear, " +userFullName+ "." + "<br>" + "<br>" + "Your Summary Payment has been approved." + "<br>" + "<br>" + "Order number: " +orderNumber+ "." + "<br>" + "Order date " +orderCreateDate+ "." + "<br>" + "Summary Rang:" +orderRang+ "." + "<br>" + "<br>" + "Payment Slip: " +paymentSlip+ "." + "<br>" + "Payment date: " +paymentDate+ "." + "<br>" + "Payment amount: ฿" +paymentAmount+ "." + "<br>" + "<br>"+ "Thank you," + "<br>" + "GIT Jewely Design Gallery Team"
 
     // console.log(adminEmail)
 
