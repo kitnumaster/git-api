@@ -442,27 +442,33 @@ const UserGetProduct = (req, res, next) => {
     // console.log(req.ipAddresses)
     // console.log(req.userId)
     const productId = req.params.productId
-    Product.findById(productId, {
-        "files": 0
-    })
+        Product.findById(productId, {
+            "files": 0
+        })
         .populate("account")
         .populate("material", {
             materialName: 1,
+            materialNameTH: 1,
         })
         .populate("housing", {
             housingName: 1,
+            housingNameTH: 1,
         })
         .populate("trend", {
             trendName: 1,
+            trendNameTH: 1,
         })
         .populate("fileType", {
             fileTypeName: 1,
+            fileTypeNameTH: 1,
         })
         .populate("jewerlyType", {
             jewerlyTypeName: 1,
+            jewerlyTypeNameTH: 1,
         })
         .populate("detail", {
             detailName: 1,
+            detailNameTH: 1,
         })
         .populate("set", {
             setName: 1,

@@ -477,10 +477,10 @@ const DownloadProduct = (req, res, next) => {
     if (req.userType != "admin") {
         query.account = req.userId
     }
-    console.log(query)
+    // console.log(query)
     Order.find(query)
         .then(orders => {
-            console.log(orders)
+            // console.log(orders)
             if (orders.length > 0) {
                 // console.log('orders')
                 AddProductDownloadLog(req.userId || null, productId, req.ipAddresses || null)
@@ -491,18 +491,21 @@ const DownloadProduct = (req, res, next) => {
             }
         })
         .then(product => {
-            console.log(product)
+            // console.log(product)
             const zip = new AdmZip();
             product.files.forEach(file => {
                 zip.addLocalFile(`./${file.filePath}`)
             });
             let fileDownload = `./temp/zips/${Number(new Date())}.zip`
+
             zip.writeZip(
                 fileDownload,
                 err => {
                     if (err) {
                         console.log(err);
                     }
+
+                    console.log("fileDownload",fileDownload)
                     res.download(
                         fileDownload,
                         function (err) {
@@ -519,9 +522,9 @@ const DownloadProduct = (req, res, next) => {
             // console.log("Download start...")
             // const file = `./files/6536a537861237875aab4532/S__35364961_0.jpg`;
             // res.download(file)
-            // res.status(200).json({
-            //     product: product
-            // });
+            res.status(200).json({
+                fileDownload: fileDownload
+            });
         })
         .catch(err => {
             if (!err.statusCode) {
