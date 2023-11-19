@@ -8,6 +8,7 @@ const ProductDownloadLog = require('../models/log/productDownloadLog');
 const FileType = require('../models/setting/file-type');
 const emailCtr = require('./email')
 const fs = require('fs')
+const moment = require('moment')
 
 const zeroFill = (number, width) => {
     width -= number.toString().length;
@@ -71,9 +72,11 @@ const CreateOrder = async (req, res, next) => {
             body.orderStatus = 2
             body.paymentStatus = 3
         }
+        let paymentMethod = body.paymentMethod
         body.paymentDetail = productDetail.paymentDetail
         body.totalDiscount = productDetail.totalDiscount.toFixed(2)
         body.totalPrice = productDetail.totalPrice.toFixed(2)
+        let paymentAmount = body.totalPrice
         console.log(body)
 
         // res.status(201).json({
@@ -89,7 +92,7 @@ const CreateOrder = async (req, res, next) => {
         }
 
         body.orderNumber = zeroFill(orderNumber, 4)
-
+        orderNumber = `OD-${orderNumber}`
         const order = new Order(body)
         order
             .save()
@@ -99,9 +102,13 @@ const CreateOrder = async (req, res, next) => {
                 let getMailAccount = await Account.findById(accountId, {
                     email: 1
                 })
-                emailCtr.NewOrder(getMailAccount.email)
-
+                let userFullname = getMailAccount.firstName && getMailAccount.lastName ? `${getMailAccount.firstName} ${getMailAccount.lastName}` : getMailAccount.userName
+                // console.log(result)
+                let orderCreateDate = moment(order.createdAt).add('7', 'hours').format('DD-MMM-YY HH:mm')
+                emailCtr.NewOrder(getMailAccount.email, userFullname, order._id, orderNumber, orderCreateDate, paymentMethod, paymentAmount)
+                let productId = []
                 for (let i of order.paymentDetail) {
+                    productId.push(i.product)
                     let orderP = new OrderProduct({
                         account: i.account,
                         product: i.product,
@@ -114,9 +121,18 @@ const CreateOrder = async (req, res, next) => {
                     await orderP.save()
                 }
 
+                await Product.updateMany(
+                    {
+                        _id: {
+                            $in: productId
+                        }
+                    }, {
+                    sold: true,
+                })
+
                 res.status(201).json({
                     message: 'Created successfully!',
-                    product: order
+                    order: order
                 });
             })
             .catch(err => {
@@ -352,12 +368,16 @@ const UpdateOrder = (req, res, next) => {
                 throw error;
             }
 
+            let orderNumber = `OD-${order.orderNumber}`
+            let orderCreateDate = moment(order.createdAt).add('7', 'hours').format('DD-MMM-YY HH:mm')
+            let paymentDate = moment().add('7', 'hours').format('DD-MMM-YY HH:mm')
+            let paymentAmount = order.totalPrice
             if (update.paymentStatus == 2) {
                 //send email
                 let getMailAccount = await Account.findById(order.account, {
                     email: 1
                 })
-                emailCtr.OrderTranfer(getMailAccount.email)
+                emailCtr.OrderTranfer(getMailAccount.email, orderNumber, orderCreateDate, null, paymentDate, paymentAmount)
             }
 
             if (update.paymentStatus && update.paymentStatus == 3) {
@@ -388,7 +408,10 @@ const UpdateOrder = (req, res, next) => {
                 let getMailAccount = await Account.findById(order.account, {
                     email: 1
                 })
-                emailCtr.ApproveOrderTranfer(getMailAccount.email)
+                let userFullname = getMailAccount.firstName && getMailAccount.lastName ? `${getMailAccount.firstName} ${getMailAccount.lastName}` : getMailAccount.userName
+
+                paymentDate = moment(paymentCompleteDate).add('7', 'hours').format('DD-MMM-YY HH:mm')
+                emailCtr.ApproveOrderTranfer(getMailAccount.email, userFullname, orderNumber, orderCreateDate, null, paymentDate, paymentAmount)
             }
 
             return Order.findByIdAndUpdate(orderId, update, { new: true })
@@ -505,7 +528,7 @@ const DownloadProduct = (req, res, next) => {
                         console.log(err);
                     }
 
-                    console.log("fileDownload",fileDownload)
+                    console.log("fileDownload", fileDownload)
                     res.download(
                         fileDownload,
                         function (err) {
@@ -560,5 +583,5 @@ module.exports = {
     GetOrder,
     UpdateOrder,
     GetOrderProductOrders,
-    DownloadProduct
+    DownloadProduct,
 }

@@ -442,9 +442,9 @@ const UserGetProduct = (req, res, next) => {
     // console.log(req.ipAddresses)
     // console.log(req.userId)
     const productId = req.params.productId
-        Product.findById(productId, {
-            "files": 0
-        })
+    Product.findById(productId, {
+        "files": 0
+    })
         .populate("account")
         .populate("material", {
             materialName: 1,
@@ -481,7 +481,7 @@ const UserGetProduct = (req, res, next) => {
             }
 
             req.userType == 'admin' ? null : AddProductViewLog(req.userId || null, productId, req.ipAddresses || null)
-            
+
             res.status(200).json({ message: 'fetched.', product: product })
         })
         .catch(err => {
@@ -606,7 +606,12 @@ const UpdateProductSummaries = (req, res, next) => {
                     let getMailAccount = await Account.findById(order.account, {
                         email: 1
                     })
-                    emailCtr.ApproveDesignerOrderTranfer(getMailAccount.email)
+                    let summaryNumber = `AC-${product.summaryNumber}`
+                    let orderRang = product.summaryMonth
+                    let userFullname = getMailAccount.firstName && getMailAccount.lastName ? `${getMailAccount.firstName} ${getMailAccount.lastName}` : getMailAccount.userName
+                    let paymentDate = moment(update.paymentTranferDate).format('DD-MMM-YY HH:mm')
+                    let paymentAmount = update.paymentTranferPrice
+                    emailCtr.ApproveDesignerOrderTranfer(getMailAccount.email, userFullname, summaryNumber, orderRang, paymentDate, paymentAmount)
                 }
 
                 return ProductSummaries.findByIdAndUpdate(productSummaryId, update, { new: true })

@@ -148,7 +148,7 @@ exports.AccountSignup = (req, res, next) => {
 
       //send email
       //admin user
-      emailCtr.NewUser(email, activateCode)
+      emailCtr.NewUser(email, userName, activateCode)
 
       return account.save();
     })

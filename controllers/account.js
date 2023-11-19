@@ -118,9 +118,8 @@ const UpdateAccount = (req, res, next) => {
 
             // console.log(update)
             if (update.requestDesigner) {
-
-                emailCtr.RegisterDesigner(account.email)
-
+                let userFullname = account.firstName && account.lastName ? `${account.firstName} ${account.lastName}` : account.userName
+                emailCtr.RegisterDesigner(account.email, userFullname)
             }
 
             return Account.findByIdAndUpdate(accountId, update, { new: true })
@@ -158,7 +157,9 @@ const ApproveAccount = (req, res, next) => {
                 account.userType = userType
                 account.approveAt = new Date()
                 //send email
-                emailCtr.ApproveDesigner(account.email)
+                let userFullname = account.firstName && account.lastName ? `${account.firstName} ${account.lastName}` : account.userName
+
+                emailCtr.ApproveDesigner(account.email, userFullname)
                 return account.save()
             })
             .then(result => {

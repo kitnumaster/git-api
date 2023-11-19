@@ -27,7 +27,14 @@ const designerRoutes = require('./routes/designer')
 const newsRoutes = require('./routes/news')
 const homePageRoutes = require('./routes/homePage')
 const dashboardRoutes = require('./routes/dashboard')
+const { CheckOrderStatus } = require('./controllers/cron-job')
 require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })
+const cron = require('node-cron')
+
+cron.schedule('* * * * *', () => {
+  console.log('running a task every minute')
+  CheckOrderStatus()
+})
 const app = express();
 
 const fileStorage = multer.diskStorage({
@@ -36,9 +43,9 @@ const fileStorage = multer.diskStorage({
     cb(null, 'temp');
   },
   filename: (req, file, cb) => {
-    let filename =  (new Date().toISOString() + '-' + file.originalname).replaceAll(":", "");
+    let filename = (new Date().toISOString() + '-' + file.originalname).replaceAll(":", "");
     filename = filename.replaceAll(" ", "-");
-    cb(null,filename);
+    cb(null, filename);
   }
 });
 
