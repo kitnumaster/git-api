@@ -11,6 +11,7 @@ const {
     UpdateOrder,
     GetOrderProductOrders,
     DownloadProduct,
+    CreditCardPayment,
 } = require('../controllers/order')
 
 
@@ -28,5 +29,9 @@ router.delete('/order/:orderId', isAuth,
     DeleteOrder)
 router.get('/my-sale-orders', isAuth, GetOrderProductOrders)
 router.get('/product-download/:productId', isAuth, DownloadProduct)
+router.post(
+    '/enroll/payment-credit-card-success',
+    CreditCardPayment
+)
 
 module.exports = router
