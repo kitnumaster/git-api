@@ -194,7 +194,8 @@ const ActivateAccount = (req, res, next) => {
             return account.save()
         })
         .then(result => {
-            res.status(200).json({ message: 'Updated!', account: result })
+            res.redirect('http://58.181.138.201/login');
+            // res.status(200).json({ message: 'Updated!', account: result })
         })
         .catch(err => {
             if (!err.statusCode) {
