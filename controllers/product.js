@@ -208,9 +208,7 @@ const UserGetProducts = (req, res, next) => {
         .countDocuments()
         .then(count => {
             totalItems = count;
-            return Product.find(query, {
-                'files': 0
-            })
+            return Product.find(query)
                 .populate("account")
                 .populate("material", {
                     materialName: 1,
@@ -240,7 +238,21 @@ const UserGetProducts = (req, res, next) => {
         .then(products => {
             res.status(200).json({
                 message: 'Fetched successfully.',
-                products: products,
+                products: products.map(i => {
+                    let files = null
+                    // console.log(i.account._id)
+                    // console.log(req.userId)
+                    if (req.userType && req.userType == 'admin') {
+                        files = i.files
+                    } else if (req.userId && req.userId == i.account._id) {
+                        files = i.files
+                    }
+
+                    return {
+                        ...i._doc,
+                        files: files
+                    }
+                }),
                 totalItems: totalItems,
             });
         })
