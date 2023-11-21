@@ -615,7 +615,7 @@ const UpdateProductSummaries = (req, res, next) => {
                     })
 
                     //send email
-                    let getMailAccount = await Account.findById(order.account, {
+                    let getMailAccount = await Account.findById(product.account, {
                         email: 1
                     })
                     let summaryNumber = `AC-${product.summaryNumber}`
