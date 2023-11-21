@@ -163,7 +163,7 @@ const ApproveOrderTranfer = async (to, userFullName, orderNumber, orderCreateDat
     // let paymentSlip = "";
     // let paymentDate = "";
     // let paymentAmount = "";
-    let msg = "Dear, " + userFullName + "." + "<br>" + "<br>" + "Your payment has been approved." + "<br>" + "<br>" + "Order number: " + orderNumber + "." + "<br>" + "Order date: " + orderCreateDate + "." + "<br>" + "<br>" + "Payment approved date: " + paymentDate + "." + "<br>" + "Payment amount: ฿" + paymentAmount + "." + "<br>" + "<br>" + "Your Can download A Desing in you Order Page" + "<br>" + "<br>" + "Thank you," + "<br>" + "GIT Jewely Design Gallery Team"
+    let msg = "Dear, " + userFullName + "." + "<br>" + "<br>" + "Your payment has been approved." + "<br>" + "<br>" + "Order number: " + orderNumber + "." + "<br>" + "Order date: " + orderCreateDate + "." + "<br>" + "<br>" + "Payment approved date: " + paymentDate + "." + "<br>" + "<br>" + "Your Can download A Desing in you Order Page" + "<br>" + "<br>" + "Thank you," + "<br>" + "GIT Jewely Design Gallery Team"
 
     // console.log(adminEmail)
 
