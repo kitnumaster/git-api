@@ -9,6 +9,7 @@ const {
     UpdateAccount,
     ApproveAccount,
     ActivateAccount,
+    ResetPassword,
 } = require('../controllers/account')
 
 router.get('/accounts', isAuth, GetAccounts)
@@ -28,5 +29,6 @@ router.put('/approve-designer/:accountId', isAuth,
     ApproveAccount) //admin only
 
 router.get('/account/activate/:activateCode', ActivateAccount)
+router.get('/forgot-password', ResetPassword)
 
 module.exports = router

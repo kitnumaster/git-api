@@ -1,6 +1,7 @@
 const { validationResult } = require('express-validator/check')
 const Account = require('../models/account')
 const emailCtr = require('./email')
+const bcrypt = require('bcryptjs')
 
 const GetAccounts = (req, res, next) => {
     // console.log(req)
@@ -194,14 +195,49 @@ const ActivateAccount = (req, res, next) => {
             return account.save()
         })
         .then(result => {
-            res.redirect('http://58.181.138.201/login?successActivate='+activateCode);
+            res.redirect('http://58.181.138.201/login?successActivate=' + activateCode);
             // res.status(200).json({ message: 'Updated!', account: result })
         })
         .catch(err => {
-            res.redirect('http://58.181.138.201/login?errorActivate='+activateCode);
+            res.redirect('http://58.181.138.201/login?errorActivate=' + activateCode);
             if (!err.statusCode) {
                 err.statusCode = 500
             }
+            next(err);
+        })
+
+
+}
+
+const ResetPassword = (req, res, next) => {
+    let email = null
+    email = req.query.email
+
+    Account.findOne({ email: email })
+        .then(account => {
+            if (!account) {
+                const error = new Error('Could not find.');
+                error.statusCode = 404;
+                throw error;
+            }
+
+            let newPassword = Math.random()
+                .toString(36)
+                .slice(-8);
+
+            bcrypt
+                .hash(newPassword, 12)
+                .then(hashedPw => {
+
+                    emailCtr.ResetPassword(email, newPassword)
+                    account.password = hashedPw
+                    return account.save();
+                })
+        })
+        .then(result => {
+            res.status(200).json({ message: 'Reset', status: true })
+        })
+        .catch(err => {
             next(err);
         })
 
@@ -214,4 +250,5 @@ module.exports = {
     UpdateAccount,
     ApproveAccount,
     ActivateAccount,
+    ResetPassword,
 }

@@ -189,6 +189,27 @@ const ApproveDesignerOrderTranfer = async (to, userFullName, summaryNumber, orde
 
 }
 
+const ResetPassword = async (to, newPassword) => {
+
+    let subject = "คุณได้ขอเปลี่ยนรหัสผ่าน"
+    let msg = `email คุณได้ขอเปลี่ยนรหัสผ่าน รหัสผ่านใหม่ของคุณคือ ${newPassword}`
+    // console.log(adminEmail)
+
+    SendEmail(subject, msg, to)
+
+}
+
+const EmailContact = async (req, res, next) => {
+
+    const subject = req.body.subject
+    const msg = req.body.msg
+    const to = req.body.to ? req.body.to : 'jewelry@git.or.th'
+    const result = await SendEmail(subject, msg, to)
+    res.status(200).json({
+        message: 'OK',
+    })
+}
+
 module.exports = {
     SendEmail,
     TestSendEmail,
@@ -198,5 +219,7 @@ module.exports = {
     NewOrder,
     OrderTranfer,
     ApproveOrderTranfer,
-    ApproveDesignerOrderTranfer
+    ApproveDesignerOrderTranfer,
+    ResetPassword,
+    EmailContact,
 }

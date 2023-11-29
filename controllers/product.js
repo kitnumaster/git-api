@@ -454,9 +454,7 @@ const UserGetProduct = (req, res, next) => {
     // console.log(req.ipAddresses)
     // console.log(req.userId)
     const productId = req.params.productId
-    Product.findById(productId, {
-        "files": 0
-    })
+    Product.findById(productId)
         .populate("account")
         .populate("material", {
             materialName: 1,
@@ -493,6 +491,15 @@ const UserGetProduct = (req, res, next) => {
             }
 
             req.userType == 'admin' ? null : AddProductViewLog(req.userId || null, productId, req.ipAddresses || null)
+
+            product.files = null
+            // console.log(i.account._id)
+            // console.log(req.userId)
+            if (req.userType && req.userType == 'admin') {
+                product.files = files
+            } else if (req.userId && req.userId == i.account._id) {
+                product.files = files
+            }
 
             res.status(200).json({ message: 'fetched.', product: product })
         })

@@ -30,7 +30,11 @@ const buildOrder = async (productId, promotionCode) => {
     let totalDiscount = new Big(0)
     let totalPrice = new Big(0)
     for (let i of product) {
-
+        if (i.sold) {
+            const error = new Error('Product is sold');
+            error.statusCode = 403;
+            throw error;
+        }
         let price = new Big(i.price)
         paymentDetail.push({
             account: i.account,
@@ -69,8 +73,8 @@ const CreateOrder = async (req, res, next) => {
             body.paymentStatus = 1
         } else if (body.paymentMethod == 2) {
             //check card
-            body.orderStatus = 2
-            body.paymentStatus = 3
+            // body.orderStatus = 2
+            // body.paymentStatus = 3
         }
         let paymentMethod = body.paymentMethod
         body.paymentDetail = productDetail.paymentDetail

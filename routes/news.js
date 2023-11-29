@@ -12,6 +12,10 @@ const {
     DeleteNews,
 } = require('../controllers/news')
 
+const {
+    EmailContact
+} = require('../controllers/email')
+
 
 // create
 router.post(
@@ -25,5 +29,7 @@ router.put('/news/:newsId', isAuth,
     UpdateNews)
 router.delete('/news/:newsId', isAuth,
     UpdateNews)
+
+router.post('/email-contact', EmailContact)
 
 module.exports = router

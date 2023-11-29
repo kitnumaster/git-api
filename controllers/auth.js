@@ -134,12 +134,16 @@ exports.AccountSignup = (req, res, next) => {
   const userName = req.body.userName;
   const password = req.body.password;
   const acceptPolicy = req.body.acceptPolicy;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
   bcrypt
     .hash(password, 12)
     .then(hashedPw => {
       const activateCode = Number(new Date())
       const account = new Account({
         email: email,
+        firstName: firstName,
+        lastName: lastName,
         password: hashedPw,
         userName: userName,
         acceptPolicy: acceptPolicy,

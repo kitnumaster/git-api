@@ -9,7 +9,7 @@ const CheckOrderStatus = async () => {
 
     for (let i of orders) {
         console.log(i)
-        await Order.useFindAndModify(i._id, {
+        await Order.findByIdAndUpdate(i._id, {
             paymentStatus: 5
         })
 
