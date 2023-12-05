@@ -492,9 +492,12 @@ const UserGetProduct = (req, res, next) => {
 
             req.userType == 'admin' ? null : AddProductViewLog(req.userId || null, productId, req.ipAddresses || null)
 
+            let files = product.files;
             product.files = null
+            
             // console.log(i.account._id)
             // console.log(req.userId)
+
             if (req.userType && req.userType == 'admin') {
                 product.files = files
             } else if (req.userId && req.userId == i.account._id) {
