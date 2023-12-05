@@ -419,7 +419,10 @@ const ReportDesignerOrders = async (req, res, next) => {
     ProductSummaries.find(query)
         .populate("account", {
             firstName: 1,
-            lastName: 1
+            lastName: 1,
+            bankAccountName: 1,
+            bankAccount: 1,
+            bankName: 1,
         })
         .populate("products.order")
         .populate("products.product")
@@ -431,9 +434,10 @@ const ReportDesignerOrders = async (req, res, next) => {
                     n++
                     let order = j.order
                     let product = j.product
-                    // console.log(order.paymentDetail)
+                    console.log("productSummaries",i)
                     let productFound = order.paymentDetail.find(element => element.product.toString() == product._id.toString())
                     // console.log(productFound)
+                    let percentFee = (productFound.total * (30 / 100)).toFixed(2);
                     results.push({
                         no: n,
                         orderNumber: `OD-${order.orderNumber}`,
@@ -443,12 +447,15 @@ const ReportDesignerOrders = async (req, res, next) => {
                         discount: productFound.discount,
                         price: productFound.price,
                         total: productFound.total,
-                        transaction: i.transaction ? transaction : '-',
+                        transaction: "AC-" + i.summaryNumber,
                         paymentStatus: i.paymentStatus,
-                        paymentTranferDate: i.paymentTranferDate ? i.paymentTranferDate : '-',
+                        paymentTranferDate: i.paymentTranferDate ? i.paymentTranferDate : i.updatedAt,
                         paymentTranferSlip: i.paymentTranferSlip,
-                        bankAccountName: i.account.bankAccountName ? i.account.bankAccountName : '-',
+                        bankAccountName: i.account.bankAccountName ? i.account.bankAccountName : `${i.account.firstName} ${i.account.lastName}`,
+                        bankAccount: i.account.bankAccount ? i.account.bankAccount : '-',
                         bankName: i.account.bankName ? i.account.bankName : '-',
+                        tranferFee: i.tranferFee ? i.tranferFee : percentFee,
+                        transferAmount: i.transferAmount ? i.transferAmount : productFound.total - percentFee,
                         createdAt: i.createdAt,
                         orderCreatedAt: order.createdAt
                     })
