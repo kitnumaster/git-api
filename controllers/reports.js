@@ -118,7 +118,7 @@ const ReportOrders = async (req, res, next) => {
                 result.push({
                     no: n,
                     orderNumber: `OD-${i.orderNumber}`,
-                    customer: `${i.customerFirstName} ${i.customerLastName}`,
+                    customer: i.customerFirstName ? `${i.customerFirstName} ${i.customerLastName}` : '-',
                     createdAt: i.createdAt,
                     paymentStatus: i.paymentStatus,
                     paymentMethod: i.paymentMethod,
