@@ -494,13 +494,13 @@ const UserGetProduct = (req, res, next) => {
 
             let files = product.files;
             product.files = null
-            
+
             // console.log(i.account._id)
             // console.log(req.userId)
 
             if (req.userType && req.userType == 'admin') {
                 product.files = files
-            } else if (req.userId && req.userId == i.account._id) {
+            } else if (req.userId && req.userId == product.account._id) {
                 product.files = files
             }
 
