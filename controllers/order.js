@@ -41,7 +41,7 @@ const buildOrder = async (productId, promotionCode) => {
             product: i._id,
             price: i.price,
             discount: i.discount,
-            total: price.minus(i.discount).toFixed(2)
+            total: i.price,
         })
         totalDiscount = totalDiscount.plus(Number(i.discount))
         totalPrice = totalPrice.plus(Number(i.price))

@@ -631,8 +631,8 @@ const UpdateProductSummaries = (req, res, next) => {
                     let summaryNumber = `AC-${product.summaryNumber}`
                     let orderRang = product.summaryMonth
                     let userFullname = getMailAccount.firstName && getMailAccount.lastName ? `${getMailAccount.firstName} ${getMailAccount.lastName}` : getMailAccount.userName
-                    let paymentDate = moment(update.paymentTranferDate).format('DD-MMM-YY HH:mm')
-                    let paymentAmount = update.paymentTranferPrice
+                    let paymentDate = moment(product.paymentTranferDate).format('DD-MMM-YY HH:mm')
+                    let paymentAmount = product.paymentTranferPrice
                     emailCtr.ApproveDesignerOrderTranfer(getMailAccount.email, userFullname, summaryNumber, orderRang, paymentDate, paymentAmount)
                 }
 
