@@ -384,6 +384,22 @@ const UpdateOrder = (req, res, next) => {
                 emailCtr.OrderTranfer(getMailAccount.email, orderNumber, orderCreateDate, null, paymentDate, paymentAmount)
             }
 
+            if (update.paymentStatus && update.paymentStatus == 5) {
+                let productId = []
+                for (let i of order.paymentDetail) {
+                    productId.push(i.product)
+                }
+                // console.log(productId)
+                await Product.updateMany(
+                    {
+                        _id: {
+                            $in: productId
+                        }
+                    }, {
+                    sold: false,
+                })
+            }
+
             if (update.paymentStatus && update.paymentStatus == 3) {
                 let paymentCompleteDate = Date.now()
                 update.paymentCompleteDate = paymentCompleteDate
