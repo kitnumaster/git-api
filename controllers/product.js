@@ -80,65 +80,73 @@ const CreateProduct = (req, res, next) => {
 const GetProducts = (req, res, next) => {
 
     let query = {}
-    if (req.userType && req.userType == 2) {
-        query.account = req.userId
-    }
-    let sort = {
-        createdAt: -1
-    }
-    if (req.query.sortBy) {
-        let sortBy = req.query.sortBy
-        sort = {
-            [sortBy]: req.query.sortType || -1
+    if (req.userType && req.userType != 1) {
+        if (req.userType && req.userType == 2) {
+            query.account = req.userId
         }
-    }
-    const currentPage = req.query.page || 1;
-    const perPage = 30;
-    let totalItems;
-    Product.find(query)
-        .countDocuments()
-        .then(count => {
-            totalItems = count;
-            return Product.find(query)
-                .populate("account")
-                .populate("material", {
-                    materialName: 1,
-                })
-                .populate("housing", {
-                    housingName: 1,
-                })
-                .populate("trend", {
-                    trendName: 1,
-                })
-                .populate("fileType", {
-                    fileTypeName: 1,
-                })
-                .populate("jewerlyType", {
-                    jewerlyTypeName: 1,
-                })
-                .populate("detail", {
-                    detailName: 1,
-                })
-                .populate("set", {
-                    setName: 1,
-                })
-                .sort(sort)
-                .skip((currentPage - 1) * perPage)
-                .limit(perPage);
-        })
-        .then(products => {
-            res.status(200).json({
-                message: 'Fetched successfully.',
-                products: products,
-                totalItems: totalItems,
-            });
-        })
-        .catch(err => {
-            if (!err.statusCode) {
-                err.statusCode = 500
+        let sort = {
+            createdAt: -1
+        }
+        if (req.query.sortBy) {
+            let sortBy = req.query.sortBy
+            sort = {
+                [sortBy]: req.query.sortType || -1
             }
-            next(err)
-        })
+        }
+        const currentPage = req.query.page || 1;
+        const perPage = 30;
+        let totalItems;
+        Product.find(query)
+            .countDocuments()
+            .then(count => {
+                totalItems = count;
+                return Product.find(query)
+                    .populate("account")
+                    .populate("material", {
+                        materialName: 1,
+                    })
+                    .populate("housing", {
+                        housingName: 1,
+                    })
+                    .populate("trend", {
+                        trendName: 1,
+                    })
+                    .populate("fileType", {
+                        fileTypeName: 1,
+                    })
+                    .populate("jewerlyType", {
+                        jewerlyTypeName: 1,
+                    })
+                    .populate("detail", {
+                        detailName: 1,
+                    })
+                    .populate("set", {
+                        setName: 1,
+                    })
+                    .sort(sort)
+                    .skip((currentPage - 1) * perPage)
+                    .limit(perPage);
+            })
+            .then(products => {
+                res.status(200).json({
+                    message: 'Fetched successfully.',
+                    products: products,
+                    totalItems: totalItems,
+                });
+            })
+            .catch(err => {
+                if (!err.statusCode) {
+                    err.statusCode = 500
+                }
+                next(err)
+            })
+    } else {
+        res.status(200).json({
+            message: 'Fetched successfully.',
+            products: [],
+            totalItems: 0,
+        });
+    }
 }
 
 const UserGetProducts = (req, res, next) => {
@@ -672,75 +680,83 @@ const GetProductSummaries = async (req, res, next) => {
     // await createProductSummaries()
 
     let query = {}
-    if (req.userType && req.userType == 2) {
-        query.account = req.userId
-    }
-    if (req.query.summaryNumber) {
-        query.summaryNumber = req.query.summaryNumber
-    }
-    if (req.query._id) {
-        query._id = req.query._id
-    }
-    if (req.query.paymentStatus) {
-        query.paymentStatus = req.query.paymentStatus
-    }
-    if (req.query.summaryMonth) {
-        query.summaryMonth = req.query.summaryMonth
-    }
-    let dataDate = null
-    if (req.query.createdAt) {
-        dataDate = req.query.createdAt.split(":")
-        date = moment(dataDate[0]).subtract(7, 'hours').format("YYYY-MM-DD")
-        date2 = moment(dataDate[1]).format("YYYY-MM-DD")
-        query.createdAt = {
-            $gte: new Date(`${date} 17:00:00`),
-            $lte: new Date(`${date2} 16:59:59`)
+    if (req.userType && req.userType != 1) {
+        if (req.userType && req.userType == 2) {
+            query.account = req.userId
         }
-    }
-    let sort = {
-        createdAt: -1
-    }
-    if (req.query.sortBy) {
-        let sortBy = req.query.sortBy
-        sort = {
-            [sortBy]: req.query.sortType || -1
+        if (req.query.summaryNumber) {
+            query.summaryNumber = req.query.summaryNumber
         }
-    }
-    const currentPage = req.query.page || 1;
-    const perPage = 30;
-    let totalItems;
-    ProductSummaries.find(query)
-        .countDocuments()
-        .then(count => {
-            totalItems = count;
-            return ProductSummaries.find(query)
-                .populate("account")
-                .populate("products.product")
-                .populate("products.order")
-                .sort(sort)
-                .skip((currentPage - 1) * perPage)
-                .limit(perPage);
-        })
-        .then(productSummaries => {
-            res.status(200).json({
-                message: 'Fetched successfully.',
-                productSummaries: productSummaries.map(i => {
-                    return {
-                        ...i._doc,
-                        summaryNumber: `AC-${i.summaryNumber}`,
-                        summaryMonth: moment(i.summaryMonth).endOf('month').format("YYYY-MM-DD") + " - " + moment(i.summaryMonth).format("YYYY-MM-01")
-
-                    }
-                }),
-                totalItems: totalItems,
-            });
-        })
-        .catch(err => {
-            if (!err.statusCode) {
-                err.statusCode = 500
+        if (req.query._id) {
+            query._id = req.query._id
+        }
+        if (req.query.paymentStatus) {
+            query.paymentStatus = req.query.paymentStatus
+        }
+        if (req.query.summaryMonth) {
+            query.summaryMonth = req.query.summaryMonth
+        }
+        let dataDate = null
+        if (req.query.createdAt) {
+            dataDate = req.query.createdAt.split(":")
+            date = moment(dataDate[0]).subtract(7, 'hours').format("YYYY-MM-DD")
+            date2 = moment(dataDate[1]).format("YYYY-MM-DD")
+            query.createdAt = {
+                $gte: new Date(`${date} 17:00:00`),
+                $lte: new Date(`${date2} 16:59:59`)
             }
-            next(err)
-        })
+        }
+        let sort = {
+            createdAt: -1
+        }
+        if (req.query.sortBy) {
+            let sortBy = req.query.sortBy
+            sort = {
+                [sortBy]: req.query.sortType || -1
+            }
+        }
+        const currentPage = req.query.page || 1;
+        const perPage = 30;
+        let totalItems;
+        ProductSummaries.find(query)
+            .countDocuments()
+            .then(count => {
+                totalItems = count;
+                return ProductSummaries.find(query)
+                    .populate("account")
+                    .populate("products.product")
+                    .populate("products.order")
+                    .sort(sort)
+                    .skip((currentPage - 1) * perPage)
+                    .limit(perPage);
+            })
+            .then(productSummaries => {
+                res.status(200).json({
+                    message: 'Fetched successfully.',
+                    productSummaries: productSummaries.map(i => {
+                        return {
+                            ...i._doc,
+                            summaryNumber: `AC-${i.summaryNumber}`,
+                            summaryMonth: moment(i.summaryMonth).endOf('month').format("YYYY-MM-DD") + " - " + moment(i.summaryMonth).format("YYYY-MM-01")
+
+                        }
+                    }),
+                    totalItems: totalItems,
+                });
+            })
+            .catch(err => {
+                if (!err.statusCode) {
+                    err.statusCode = 500
+                }
+                next(err)
+            })
+    } else {
+        res.status(200).json({
+            message: 'Fetched successfully.',
+            productSummaries: [],
+            totalItems: 0,
+        });
+    }
 
 }
 

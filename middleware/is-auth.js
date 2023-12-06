@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 
-module.exports = (req, res, next) => {
+const Account = require("../models/account")
+
+module.exports = async (req, res, next) => {
   const authHeader = req.get('Authorization');
   const ipAddresses = req.header('x-forwarded-for') || req.socket.remoteAddress
   if (!authHeader) {
@@ -28,9 +30,13 @@ module.exports = (req, res, next) => {
     req.name = decodedToken.name;
     req.userType = decodedToken.userType;
   } else {
+    let user = await Account.findById(decodedToken.userId, { userType: 1 })
+    // console.log(user)
     req.userId = decodedToken.userId;
     req.email = decodedToken.email;
-    req.userType = decodedToken.userType;
+    req.userType = user.userType;
+
+    // console.log(req)
   }
 
   next();
