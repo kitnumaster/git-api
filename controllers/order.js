@@ -463,9 +463,17 @@ const GetOrderProductOrders = async (req, res, next) => {
     if (req.userType != "admin") {
         query.account = req.userId
     }
-
+    let sort = {
+        createdAt: -1
+    }
+    if (req.query.sortBy) {
+        let sortBy = req.query.sortBy
+        sort = {
+            [sortBy]: req.query.sortType || -1
+        }
+    }
     const currentPage = req.query.page || 1;
-    const perPage = 2;
+    const perPage = 30;
     let totalItems;
     OrderProduct.find(query)
         .countDocuments()
@@ -480,6 +488,7 @@ const GetOrderProductOrders = async (req, res, next) => {
                 .populate("product", {
                     files: 0,
                 })
+                .sort(sort)
                 .skip((currentPage - 1) * perPage)
                 .limit(perPage);
         })
