@@ -636,13 +636,16 @@ const UpdateProductSummaries = (req, res, next) => {
 
                     //send email
                     let getMailAccount = await Account.findById(product.account, {
-                        email: 1
+                        email: 1,
+                        firstName: 1,
+                        lastName: 1,
+                        userName: 1
                     })
                     let summaryNumber = `AC-${product.summaryNumber}`
                     let orderRang = product.summaryMonth
                     let userFullname = getMailAccount.firstName && getMailAccount.lastName ? `${getMailAccount.firstName} ${getMailAccount.lastName}` : getMailAccount.userName
                     let paymentDate = moment(product.paymentTranferDate).format('DD-MMM-YY HH:mm')
-                    let paymentAmount = product.paymentTranferPrice
+                    let paymentAmount = update.transferAmount ? update.transferAmount : product.transferAmount
                     emailCtr.ApproveDesignerOrderTranfer(getMailAccount.email, userFullname, summaryNumber, orderRang, paymentDate, paymentAmount)
                 }
 

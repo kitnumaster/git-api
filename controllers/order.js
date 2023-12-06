@@ -111,7 +111,10 @@ const CreateOrder = async (req, res, next) => {
 
                     //send email
                     let getMailAccount = await Account.findById(accountId, {
-                        email: 1
+                        email: 1,
+                        firstName: 1,
+                        lastName: 1,
+                        userName: 1
                     })
                     let userFullname = getMailAccount.firstName && getMailAccount.lastName ? `${getMailAccount.firstName} ${getMailAccount.lastName}` : getMailAccount.userName
                     // console.log(result)
@@ -387,7 +390,10 @@ const UpdateOrder = (req, res, next) => {
             if (update.paymentStatus == 2) {
                 //send email
                 let getMailAccount = await Account.findById(order.account, {
-                    email: 1
+                    email: 1,
+                    firstName: 1,
+                    lastName: 1,
+                    userName: 1
                 })
                 emailCtr.OrderTranfer(getMailAccount.email, orderNumber, orderCreateDate, null, paymentDate, paymentAmount)
             }
@@ -434,7 +440,10 @@ const UpdateOrder = (req, res, next) => {
 
                 //send email
                 let getMailAccount = await Account.findById(order.account, {
-                    email: 1
+                    email: 1,
+                    firstName: 1,
+                    lastName: 1,
+                    userName: 1
                 })
                 let userFullname = getMailAccount.firstName && getMailAccount.lastName ? `${getMailAccount.firstName} ${getMailAccount.lastName}` : getMailAccount.userName
 
@@ -670,7 +679,10 @@ const CreditCardPayment = (req, res, next) => {
 
                 //send email
                 let getMailAccount = await Account.findById(order.account, {
-                    email: 1
+                    email: 1,
+                    firstName: 1,
+                    lastName: 1,
+                    userName: 1
                 })
                 let userFullname = getMailAccount.firstName && getMailAccount.lastName ? `${getMailAccount.firstName} ${getMailAccount.lastName}` : getMailAccount.userName
 
