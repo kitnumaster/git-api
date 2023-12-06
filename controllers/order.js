@@ -39,9 +39,9 @@ const buildOrder = async (productId, promotionCode) => {
         paymentDetail.push({
             account: i.account,
             product: i._id,
-            price: i.price,
+            price: price.plus(i.discount).toFixed(2),
             discount: i.discount,
-            total: i.price,
+            total: i.price
         })
         totalDiscount = totalDiscount.plus(Number(i.discount))
         totalPrice = totalPrice.plus(Number(i.price))
