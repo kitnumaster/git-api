@@ -31,9 +31,10 @@ const buildOrder = async (productId, promotionCode) => {
     let totalPrice = new Big(0)
     for (let i of product) {
         if (i.sold) {
-            const error = new Error('Product is sold');
-            error.statusCode = 403;
-            throw error;
+            return null
+            // const error = new Error('Product is sold');
+            // error.statusCode = 403;
+            // throw error;
         }
         let price = new Big(i.price)
         paymentDetail.push({
@@ -67,84 +68,91 @@ const CreateOrder = async (req, res, next) => {
         req.body.account = accountId
         const body = req.body
         let productDetail = await buildOrder(body.product)
-        body.orderStatus = 1
-        if (body.paymentMethod == 1) {
+        if (!productDetail) {
+            const error = new Error('Product is sold');
+            error.statusCode = 403;
+            // throw error;
+            next(error)
+        } else {
             body.orderStatus = 1
-            body.paymentStatus = 1
-        } else if (body.paymentMethod == 2) {
-            //check card
-            // body.orderStatus = 2
-            // body.paymentStatus = 3
-        }
-        let paymentMethod = body.paymentMethod
-        body.paymentDetail = productDetail.paymentDetail
-        body.totalDiscount = productDetail.totalDiscount.toFixed(2)
-        body.totalPrice = productDetail.totalPrice.toFixed(2)
-        let paymentAmount = body.totalPrice
-        console.log(body)
+            if (body.paymentMethod == 1) {
+                body.orderStatus = 1
+                body.paymentStatus = 1
+            } else if (body.paymentMethod == 2) {
+                //check card
+                // body.orderStatus = 2
+                // body.paymentStatus = 3
+            }
+            let paymentMethod = body.paymentMethod
+            body.paymentDetail = productDetail.paymentDetail
+            body.totalDiscount = productDetail.totalDiscount.toFixed(2)
+            body.totalPrice = productDetail.totalPrice.toFixed(2)
+            let paymentAmount = body.totalPrice
+            console.log(body)
 
-        // res.status(201).json({
-        //     message: 'Created successfully!',
-        //     product: productDetail
-        // });
-        let orderNumber = 1
-        const getNumber = await Order.findOne({})
-            .sort({ createdAt: -1 })
-        // console.log(getNumber)
-        if (getNumber) {
-            orderNumber = parseInt(getNumber.orderNumber) + 1
-        }
+            // res.status(201).json({
+            //     message: 'Created successfully!',
+            //     product: productDetail
+            // });
+            let orderNumber = 1
+            const getNumber = await Order.findOne({})
+                .sort({ createdAt: -1 })
+            // console.log(getNumber)
+            if (getNumber) {
+                orderNumber = parseInt(getNumber.orderNumber) + 1
+            }
 
-        body.orderNumber = zeroFill(orderNumber, 4)
-        orderNumber = `OD-${orderNumber}`
-        const order = new Order(body)
-        order
-            .save()
-            .then(async result => {
+            body.orderNumber = zeroFill(orderNumber, 4)
+            orderNumber = `OD-${orderNumber}`
+            const order = new Order(body)
+            order
+                .save()
+                .then(async result => {
 
-                //send email
-                let getMailAccount = await Account.findById(accountId, {
-                    email: 1
-                })
-                let userFullname = getMailAccount.firstName && getMailAccount.lastName ? `${getMailAccount.firstName} ${getMailAccount.lastName}` : getMailAccount.userName
-                // console.log(result)
-                let orderCreateDate = moment(order.createdAt).add('7', 'hours').format('DD-MMM-YY HH:mm')
-                emailCtr.NewOrder(getMailAccount.email, userFullname, order._id, orderNumber, orderCreateDate, paymentMethod, paymentAmount)
-                let productId = []
-                for (let i of order.paymentDetail) {
-                    productId.push(i.product)
-                    let orderP = new OrderProduct({
-                        account: i.account,
-                        product: i.product,
-                        price: i.price,
-                        discount: i.discount,
-                        total: i.total,
-                        order: order._id,
-                        paymentStatus: 1
+                    //send email
+                    let getMailAccount = await Account.findById(accountId, {
+                        email: 1
                     })
-                    await orderP.save()
-                }
+                    let userFullname = getMailAccount.firstName && getMailAccount.lastName ? `${getMailAccount.firstName} ${getMailAccount.lastName}` : getMailAccount.userName
+                    // console.log(result)
+                    let orderCreateDate = moment(order.createdAt).add('7', 'hours').format('DD-MMM-YY HH:mm')
+                    emailCtr.NewOrder(getMailAccount.email, userFullname, order._id, orderNumber, orderCreateDate, paymentMethod, paymentAmount)
+                    let productId = []
+                    for (let i of order.paymentDetail) {
+                        productId.push(i.product)
+                        let orderP = new OrderProduct({
+                            account: i.account,
+                            product: i.product,
+                            price: i.price,
+                            discount: i.discount,
+                            total: i.total,
+                            order: order._id,
+                            paymentStatus: 1
+                        })
+                        await orderP.save()
+                    }
 
-                await Product.updateMany(
-                    {
-                        _id: {
-                            $in: productId
-                        }
-                    }, {
-                    sold: true,
+                    await Product.updateMany(
+                        {
+                            _id: {
+                                $in: productId
+                            }
+                        }, {
+                        sold: true,
+                    })
+
+                    res.status(201).json({
+                        message: 'Created successfully!',
+                        order: order
+                    });
                 })
-
-                res.status(201).json({
-                    message: 'Created successfully!',
-                    order: order
+                .catch(err => {
+                    if (!err.statusCode) {
+                        err.statusCode = 500
+                    }
+                    next(err)
                 });
-            })
-            .catch(err => {
-                if (!err.statusCode) {
-                    err.statusCode = 500
-                }
-                next(err)
-            });
+        }
     } else {
         const error = new Error('Permission denied.');
         error.statusCode = 403;

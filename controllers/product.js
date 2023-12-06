@@ -675,6 +675,9 @@ const GetProductSummaries = async (req, res, next) => {
     if (req.query.summaryNumber) {
         query.summaryNumber = req.query.summaryNumber
     }
+    if (req.query._id) {
+        query._id = req.query._id
+    }
     if (req.query.paymentStatus) {
         query.paymentStatus = req.query.paymentStatus
     }
