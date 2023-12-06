@@ -819,8 +819,8 @@ const createProductSummaries = async (month, year) => {
                     order: i.order,
                     product: i.product
                 })
-                price = totalPrice.plus(Number(i.price))
-                totalDiscount = totalPrice.plus(Number(i.discount))
+                price = price.plus(Number(i.price))
+                totalDiscount = totalDiscount.plus(Number(i.discount))
                 totalPrice = totalPrice.plus(Number(i.total))
 
             }
