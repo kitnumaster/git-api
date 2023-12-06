@@ -83,6 +83,15 @@ const GetProducts = (req, res, next) => {
     if (req.userType && req.userType == 2) {
         query.account = req.userId
     }
+    let sort = {
+        createdAt: -1
+    }
+    if (req.query.sortBy) {
+        let sortBy = req.query.sortBy
+        sort = {
+            [sortBy]: req.query.sortType || -1
+        }
+    }
     const currentPage = req.query.page || 1;
     const perPage = 30;
     let totalItems;
@@ -113,6 +122,7 @@ const GetProducts = (req, res, next) => {
                 .populate("set", {
                     setName: 1,
                 })
+                .sort(sort)
                 .skip((currentPage - 1) * perPage)
                 .limit(perPage);
         })
@@ -814,6 +824,7 @@ const createProductSummaries = async (month, year) => {
             let totalPrice = new Big(0)
             let id = []
             for (let i of g[k]) {
+                // console.log(i)
                 id.push(i._id)
                 products.push({
                     order: i.order,
@@ -832,7 +843,7 @@ const createProductSummaries = async (month, year) => {
             obj.total = totalPrice.toFixed(2)
             obj.paymentStatus = 1
             obj.summaryMonth = moment().format("YYYY-MM")
-            console.log(obj)
+            // console.log(obj)
             let productSummaries = new ProductSummaries(obj)
             await productSummaries.save()
             await OrderProduct.updateMany({
