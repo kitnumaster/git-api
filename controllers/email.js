@@ -121,7 +121,7 @@ const NewOrder = async (to, userFullName, orderId, orderNumber, orderCreateDate,
     let paymentMethodTxt = paymentMethod == 1 ? "โอนเงินผ่านบัญชีธนาคาร" : "บัตรเครดิต"
     // paymentAmount = "";
     let PaymentStatus = 1;
-    let paymentConfirmUrl = "http://58.181.138.201/paymentconfirm?order=" + orderId;
+    let paymentConfirmUrl = "http://designgallery.git.or.th/paymentconfirm?order=" + orderId;
     let msg = "Dear, " + userFullName + "." + "<br>" + "<br>" + "Thank you for your order" + "<br>" + "<br>" + "Your order number is " + orderNumber + "." + "<br>" + "Order date: " + orderCreateDate + "." + "<br>" + "<br>"
     msg += "<br>" + "<br>" + "Payment Method: " + paymentMethodTxt + "." + "<br>" + "Payment amount: ฿" + paymentAmount + "."
     if (paymentMethod == 1) {
