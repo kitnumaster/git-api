@@ -207,7 +207,7 @@ const ResetPassword = async (to, newPassword) => {
 
     let subject = "คุณได้ขอเปลี่ยนรหัสผ่าน"
     let msg = `คุณได้ขอเปลี่ยนรหัสผ่าน รหัสผ่านใหม่ของคุณคือ <b>${newPassword} </b>` + "<br> เมื่อคุณเข้าสู่ระบบแล้วกรุณาเปลี่ยนรหัสผ่านใหม่ <br><br>" + "ขอบคุณค่ะ," + "<br>" + "GIT Jewely Design Gallery Team  <br><br>"
-        msg += `You have requested to change your password. Your new password is<b> ${newPassword}</b>` +"<br> Once you have logged in, please change your password. <br><br>" + "ขอบคุณค่ะ," + "<br>" + "GIT Jewely Design Gallery Team  <br><br>"
+        msg += `You have requested to change your password. Your new password is<b> ${newPassword}</b>` +"<br> Once you have logged in, please change your password. <br><br>" + "Thank you," + "<br>" + "GIT Jewely Design Gallery Team  <br><br>"
     // console.log(adminEmail)
 
     SendEmail(subject, msg, to)
