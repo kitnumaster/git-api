@@ -76,8 +76,6 @@ router.post(
                 res.redirect(res.data.redirect_url);
             }
         }).catch((err) => {
-            showNotify(err.message, "error");
-            closeModalPolicy.click();
             console.log("gotoPaymentCredit err", err);
         })
     })
