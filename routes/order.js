@@ -77,6 +77,10 @@ router.post(
             }
         }).catch((err) => {
             console.log("gotoPaymentCredit err", err);
+            if (!err.statusCode) {
+                err.statusCode = 500;
+            }
+            next(err);
         })
     })
 
