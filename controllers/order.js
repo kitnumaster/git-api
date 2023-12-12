@@ -625,7 +625,13 @@ const AddProductDownloadLog = async (account, productId, IP) => {
 }
 
 const CreditCardPayment = (req, res, next) => {
+
     console.log("CreditCardPayment req.body", req.body);
+	
+	if( req.body.req_referance_number == undefined){
+		res.redirect('http://designgallery.git.or.th/myprofile/orders?payCredit=error');
+	}
+
     let orderNumber = req.body.req_referance_number.replace('OD-', '')
 
     const orderId = req.params.orderId;
@@ -694,10 +700,12 @@ const CreditCardPayment = (req, res, next) => {
 
             return Order.findByIdAndUpdate(orderId, update, { new: true })
         })
-        .then(result => {
+        .then(result => {						
+			res.redirect('http://designgallery.git.or.th/myprofile/orders?payCredit=success');
             res.status(200).json({ message: 'Updated!', product: result })
         })
         .catch(err => {
+			res.redirect('http://designgallery.git.or.th/myprofile/orders?payCredit=error');
             if (!err.statusCode) {
                 err.statusCode = 500
             }
