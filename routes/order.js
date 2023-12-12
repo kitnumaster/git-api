@@ -15,14 +15,10 @@ const {
 } = require('../controllers/order')
 
 const generatePassword = () => {
-    var length = 24,
-        charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-        retVal = "";
-    for (var i = 0, n = charset.length; i < length; ++i) {
-        retVal += charset.charAt(Math.floor(Math.random() * n));
-    }
-    return retVal;
-};
+    const sec = Date.now() * 1000 + Math.random() * 1000;
+    const id = sec.toString(16).replace(/\./g, "").padEnd(12, "0");
+    return id;  
+  };
 
 // create
 router.post(
@@ -51,17 +47,19 @@ router.post(
         let data = req.body
         const { order } = data;
         const body = {
-            "access_key": process.env.MERCHANT_ACCESS_KEY || "bb47bf1d20833eaba29a5477ce518946",
-            "profile_id": process.env.MERCHANT_PROFILE_ID || "EF16D9E3-DAC3-4F89-88B7-1D31BFDDA944",
+            "access_key":"a2b0c0d0e0f0g0h0i0j0k0l0m0n0o0p2",
+            "profile_id": "0FFEAFFB-8171-4F34-A22D-1CD38A28A384",
+            "payment_method": "card",
             "transaction_uuid": generatePassword(),
             "signed_field_names": "access_key,profile_id,transaction_uuid,signed_field_names,unsigned_field_names,signed_date_time,locale,transaction_type,reference_number,amount,currency",
             "unsigned_field_names": "",
             "signed_date_time": new Date().toISOString(),
             "locale": "en",
-            "transaction_type": "sale",
+            "transaction_type": "authorization",
             "reference_number": order.orderNumber,
             "amount": order.totalPrice,
             "currency": "THB",
+            "signature" : "a2b0c0d0e0f0g0h0i0j0k0l0m0n0o0p2", // คำนวนจากค่าที่ส่งมาทั้งหมด
             // "card_type" : "001",
             // "card_number" : "4242424242424242",
             // "card_expiry_date" : "12-2030",

@@ -79,6 +79,8 @@ const CreateOrder = async (req, res, next) => {
                 body.orderStatus = 1
                 body.paymentStatus = 1
             } else if (body.paymentMethod == 2) {
+                body.orderStatus = 1
+                body.paymentStatus = 1
                 //check card
                 // body.orderStatus = 2
                 // body.paymentStatus = 3
@@ -623,7 +625,7 @@ const AddProductDownloadLog = async (account, productId, IP) => {
 }
 
 const CreditCardPayment = (req, res, next) => {
-
+    console.log("CreditCardPayment req.body", req.body);
     let orderNumber = req.body.req_referance_number.replace('OD-', '')
 
     const orderId = req.params.orderId;
