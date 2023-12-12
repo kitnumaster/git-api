@@ -3,6 +3,9 @@ const router = express.Router()
 const isAuth = require('../middleware/is-auth')
 const { body } = require('express-validator/check')
 
+const multer = require('multer')
+const upload = multer()
+
 const {
     CreateOrder,
     GetOrders,
@@ -36,6 +39,7 @@ router.get('/my-sale-orders', isAuth, GetOrderProductOrders)
 router.get('/product-download/:productId', isAuth, DownloadProduct)
 router.post(
     '/enroll/payment-credit-card-success',
+    upload.array(),
     CreditCardPayment
 )
 
@@ -47,7 +51,7 @@ router.post(
         let data = req.body
         const { order } = data;
         const body = {
-            "access_key":"a2b0c0d0e0f0g0h0i0j0k0l0m0n0o0p2",
+            "access_key": "a2b0c0d0e0f0g0h0i0j0k0l0m0n0o0p2",
             "profile_id": "0FFEAFFB-8171-4F34-A22D-1CD38A28A384",
             "payment_method": "card",
             "transaction_uuid": generatePassword(),
@@ -59,7 +63,7 @@ router.post(
             "reference_number": order.orderNumber,
             "amount": order.totalPrice,
             "currency": "THB",
-            "signature" : "a2b0c0d0e0f0g0h0i0j0k0l0m0n0o0p2", // คำนวนจากค่าที่ส่งมาทั้งหมด
+            "signature": "a2b0c0d0e0f0g0h0i0j0k0l0m0n0o0p2", // คำนวนจากค่าที่ส่งมาทั้งหมด
             // "card_type" : "001",
             // "card_number" : "4242424242424242",
             // "card_expiry_date" : "12-2030",

@@ -70,6 +70,7 @@ const fileFilter = (req, file, cb) => {
 // app.use(bodyParser.urlencoded()); // x-www-form-urlencoded <form>
 app.use(bodyParser.json()); // application/json
 app.use(
+  '/upload',
   multer({ storage: fileStorage, fileFilter: fileFilter }).single('file')
 );
 app.use('/temp', express.static(path.join(__dirname, 'temp')));
