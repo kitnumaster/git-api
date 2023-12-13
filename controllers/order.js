@@ -641,7 +641,7 @@ const CreditCardPayment = (req, res, next) => {
         throw error;
     }
 
-    if (req.body.reason_code == '102') {
+    if (req.body.reason_code == '100') {
 
         const update = {
             paymentStatus: 3,
