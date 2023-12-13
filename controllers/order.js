@@ -634,7 +634,6 @@ const CreditCardPayment = (req, res, next) => {
 
     let orderNumber = req.body.req_referance_number.replace('OD-', '')
 
-    const orderId = req.params.orderId;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const error = new Error('Validation failed, entered data is incorrect.');
@@ -642,76 +641,81 @@ const CreditCardPayment = (req, res, next) => {
         throw error;
     }
 
-    const update = {
-        paymentStatus: 3,
-        orderStatus: 2
-    }
-    Order.findOne({
-        orderNumber: orderNumber
-    })
-        .then(async order => {
-            if (!order) {
-                const error = new Error('Could not find.');
-                error.statusCode = 404;
-                throw error;
-            }
+    if (req.body.reason_code == '102') {
 
-            let orderNumber = `OD-${order.orderNumber}`
-            let orderCreateDate = moment(order.createdAt).add('7', 'hours').format('DD-MMM-YY HH:mm')
-            let paymentDate = moment().add('7', 'hours').format('DD-MMM-YY HH:mm')
-            let paymentAmount = order.totalPrice
-
-            if (update.paymentStatus && update.paymentStatus == 3) {
-                let paymentCompleteDate = Date.now()
-                update.paymentCompleteDate = paymentCompleteDate
-                let a = await OrderProduct.updateMany(
-                    {
-                        order: orderId
-                    }, {
-                    orderStatus: 2,
-                    orderCompletetDate: paymentCompleteDate
-                })
-                let productId = []
-                for (let i of order.paymentDetail) {
-                    productId.push(i.product)
+        const update = {
+            paymentStatus: 3,
+            orderStatus: 2
+        }
+        Order.findOne({
+            orderNumber: orderNumber
+        })
+            .then(async order => {
+                if (!order) {
+                    const error = new Error('Could not find.');
+                    error.statusCode = 404;
+                    throw error;
                 }
-                // console.log(productId)
-                await Product.updateMany(
-                    {
-                        _id: {
-                            $in: productId
-                        }
-                    }, {
-                    sold: true,
-                })
 
-                //send email
-                let getMailAccount = await Account.findById(order.account, {
-                    email: 1,
-                    firstName: 1,
-                    lastName: 1,
-                    userName: 1
-                })
-                let userFullname = getMailAccount.firstName && getMailAccount.lastName ? `${getMailAccount.firstName} ${getMailAccount.lastName}` : getMailAccount.userName
+                const orderId = order._id;
+                let orderNumber = `OD-${order.orderNumber}`
+                let orderCreateDate = moment(order.createdAt).add('7', 'hours').format('DD-MMM-YY HH:mm')
+                let paymentDate = moment().add('7', 'hours').format('DD-MMM-YY HH:mm')
+                let paymentAmount = order.totalPrice
 
-                paymentDate = moment(paymentCompleteDate).add('7', 'hours').format('DD-MMM-YY HH:mm')
-                emailCtr.ApproveOrderTranfer(getMailAccount.email, userFullname, orderNumber, orderCreateDate, null, paymentDate, paymentAmount)
-            }
+                if (update.paymentStatus && update.paymentStatus == 3) {
+                    let paymentCompleteDate = Date.now()
+                    update.paymentCompleteDate = paymentCompleteDate
+                    let a = await OrderProduct.updateMany(
+                        {
+                            order: orderId
+                        }, {
+                        orderStatus: 2,
+                        orderCompletetDate: paymentCompleteDate
+                    })
+                    let productId = []
+                    for (let i of order.paymentDetail) {
+                        productId.push(i.product)
+                    }
+                    // console.log(productId)
+                    await Product.updateMany(
+                        {
+                            _id: {
+                                $in: productId
+                            }
+                        }, {
+                        sold: true,
+                    })
 
-            return Order.findByIdAndUpdate(orderId, update, { new: true })
-        })
-        .then(result => {
-            res.redirect('http://designgallery.git.or.th/myprofile/orders?payCredit=success');
-            res.status(200).json({ message: 'Updated!', product: result })
-        })
-        .catch(err => {
-            res.redirect('http://designgallery.git.or.th/myprofile/orders?payCredit=error');
-            if (!err.statusCode) {
-                err.statusCode = 500
-            }
-            next(err);
-        })
+                    //send email
+                    let getMailAccount = await Account.findById(order.account, {
+                        email: 1,
+                        firstName: 1,
+                        lastName: 1,
+                        userName: 1
+                    })
+                    let userFullname = getMailAccount.firstName && getMailAccount.lastName ? `${getMailAccount.firstName} ${getMailAccount.lastName}` : getMailAccount.userName
 
+                    paymentDate = moment(paymentCompleteDate).add('7', 'hours').format('DD-MMM-YY HH:mm')
+                    emailCtr.ApproveOrderTranfer(getMailAccount.email, userFullname, orderNumber, orderCreateDate, null, paymentDate, paymentAmount)
+                }
+
+                return Order.findByIdAndUpdate(orderId, update, { new: true })
+            })
+            .then(result => {
+                res.redirect('http://designgallery.git.or.th/myprofile/orders?payCredit=success');
+                res.status(200).json({ message: 'Updated!', product: result })
+            })
+            .catch(err => {
+                res.redirect('http://designgallery.git.or.th/myprofile/orders?payCredit=error');
+                if (!err.statusCode) {
+                    err.statusCode = 500
+                }
+                next(err);
+            })
+    } else {
+        res.redirect('http://designgallery.git.or.th/myprofile/orders?payCredit=error');
+    }
 
 }
 
