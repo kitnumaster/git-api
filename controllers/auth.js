@@ -179,7 +179,7 @@ exports.AccountLogin = (req, res, next) => {
         throw error;
       }
       if (user && !user.activate) {
-        const error = new Error('Not yet activated.');
+        const error = new Error('Please activate your account by link in your email.');
         error.statusCode = 401;
         throw error;
       }

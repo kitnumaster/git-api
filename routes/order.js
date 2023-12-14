@@ -39,7 +39,7 @@ router.get('/my-sale-orders', isAuth, GetOrderProductOrders)
 router.get('/product-download/:productId', isAuth, DownloadProduct)
 router.post(
     '/enroll/payment-credit-card-success',
-    upload.array(),
+    upload.none(),
     CreditCardPayment
 )
 
