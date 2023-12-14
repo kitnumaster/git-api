@@ -167,7 +167,7 @@ const OrderTranfer = async (to, orderNumber, orderCreateDate, paymentSlip, payme
 }
 
 const ApproveOrderTranfer = async (to, userFullName, orderNumber, orderCreateDate, paymentSlip, paymentDate) => {
-
+    let OrderUrl = "http://designgallery.git.or.th/myprofile/orders"
     let subject = "[GIT Jewely Design Gallery] Approve Payment Confirmation"
     // let userFullName = "";
     // let orderNumber = "";
@@ -175,8 +175,8 @@ const ApproveOrderTranfer = async (to, userFullName, orderNumber, orderCreateDat
     // let paymentSlip = "";
     // let paymentDate = "";
     // let paymentAmount = "";
-    let msg = "เรียน, คุณ" + userFullName + "." + "<br>" + "<br>" + "รายการแจ้งชำระเงินของคุณได้รับการอนุมัติเรียบร้อยแล้ว." + "<br>" + "<br>" + "หมายเลขคำสั่งซื้อ: " + orderNumber + "." + "<br>" + "วันที่สั่งซื้อ: " + orderCreateDate + "." + "<br>" + "<br>" + "วันที่อนุมัติ: " + paymentDate + "." + "<br>" + "<br>" + "คุณสามารถดาวน์โหลดผลงานการออกแบบได้ที่หน้า <b>คำสั่งซื้อ</b>" + "<br>" + "<br>" + "ขอบคุณค่ะ," + "<br>" + "GIT Jewely Design Gallery Team <br><br>"
-        msg += "Dear, " + userFullName + "." + "<br>" + "<br>" + "Your payment has been approved." + "<br>" + "<br>" + "Order number: " + orderNumber + "." + "<br>" + "Order date: " + orderCreateDate + "." + "<br>" + "<br>" + "Payment approved date: " + paymentDate + "." + "<br>" + "<br>" + "Your Can download A Desing in you <b>Order Page</b>" + "<br>" + "<br>" + "Thank you," + "<br>" + "GIT Jewely Design Gallery Team"
+    let msg = "เรียน, คุณ" + userFullName + "." + "<br>" + "<br>" + "รายการแจ้งชำระเงินของคุณได้รับการอนุมัติเรียบร้อยแล้ว." + "<br>" + "<br>" + "หมายเลขคำสั่งซื้อ: " + orderNumber + "." + "<br>" + "วันที่สั่งซื้อ: " + orderCreateDate + "." + "<br>" + "<br>" + "วันที่อนุมัติ: " + paymentDate + "." + "<br>" + "<br>" + "คุณสามารถดาวน์โหลดผลงานการออกแบบได้ที่หน้า <a href='" + OrderUrl + "'>คำสั่งซื้อ</a>" + "<br>" + "<br>" + "ขอบคุณค่ะ," + "<br>" + "GIT Jewely Design Gallery Team <br><br>"
+        msg += "Dear, " + userFullName + "." + "<br>" + "<br>" + "Your payment has been approved." + "<br>" + "<br>" + "Order number: " + orderNumber + "." + "<br>" + "Order date: " + orderCreateDate + "." + "<br>" + "<br>" + "Payment approved date: " + paymentDate + "." + "<br>" + "<br>" + "Your can download a Desing in your <a href='" + OrderUrl + "'>Order Page</a>" + "<br>" + "<br>" + "Thank you," + "<br>" + "GIT Jewely Design Gallery Team"
 
     // console.log(adminEmail)
 
