@@ -625,8 +625,7 @@ const AddProductDownloadLog = async (account, productId, IP) => {
 }
 
 const CreditCardPayment = (req, res, next) => {
-
-
+    console.log("CreditCardPayment req.body", req.body);
     if (req.body.req_referance_number == undefined) {
         res.redirect('http://designgallery.git.or.th/myprofile/orders?payCredit=error');
     }
@@ -639,8 +638,6 @@ const CreditCardPayment = (req, res, next) => {
         error.statusCode = 422;
         throw error;
     }
-
-    console.log("CreditCardPayment req.body", req.body);
 
     if (req.body.reason_code == '100') {
         const update = {
