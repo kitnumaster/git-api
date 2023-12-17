@@ -151,9 +151,7 @@ const GetProducts = (req, res, next) => {
 
 const UserGetProducts = (req, res, next) => {
 
-    let query = {
-        sold: false
-    }
+    let query = {}
 
     if (req.userType && req.userType == 'admin') {
         query = {}
