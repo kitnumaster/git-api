@@ -635,7 +635,7 @@ const CreditCardPayment = (req, res, next) => {
     }
     // res.send(obj.req_reference_number)
     if (obj.req_reference_number == undefined) {
-        res.redirect('http://designgallery.git.or.th/myprofile/orders?payCredit=error');
+        res.redirect('https://designgallery.git.or.th/myprofile/orders?payCredit=error');
     }
 
     let orderNumber = obj.req_reference_number.replace('OD-', '')
@@ -708,18 +708,18 @@ const CreditCardPayment = (req, res, next) => {
                 return Order.findByIdAndUpdate(orderId, update, { new: true })
             })
             .then(result => {
-                // res.redirect('http://designgallery.git.or.th/myprofile/orders?payCredit=success');
                 res.status(200).json({ message: 'Updated!', product: result })
+                res.redirect('https://designgallery.git.or.th/myprofile/orders?payCredit=success');
             })
             .catch(err => {
-                // res.redirect('http://designgallery.git.or.th/myprofile/orders?payCredit=error');
                 if (!err.statusCode) {
                     err.statusCode = 500
                 }
+                res.redirect('https://designgallery.git.or.th/myprofile/orders?payCredit=error');
                 next(err);
             })
     } else {
-        res.redirect('http://designgallery.git.or.th/myprofile/orders?payCredit=error');
+        res.redirect('https://designgallery.git.or.th/myprofile/orders?payCredit=error');
     }
 
 }

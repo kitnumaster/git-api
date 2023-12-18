@@ -78,7 +78,7 @@ const NewUser = async (to, userName, activateCode) => {
     let subject = "[GIT Jewely Design Gallery] New User Registration"
 
     let userFullName = userName
-    let activateUrl = 'http://designgallery.git.or.th:3004/account/activate/' + activateCode;
+    let activateUrl = 'https://designgallery.git.or.th:3004/account/activate/' + activateCode;
     let msg = "ยินดีต้อนรับสู่ GIT Jewely Design Gallery, " + userFullName + "." + "<br>" + "กรุณาคลิกลิ้งด้านล่างเพื่อ activate บัญชีของคุณ" + "<br>" + "<br>" + "ลิ้งค์สำหรับ activate บัญชี : <a href='" + activateUrl + "'>" + activateUrl + "</a><br>" + "<br>" + "ขอบคุณค่ะ," + "<br>" + "GIT Jewely Design Gallery Team <br><br>"
         msg +="Welcome to GIT Jewely Design Gallery, " + userFullName + "." + "<br>" + "Please click the link below to activate your account." + "<br>" + "<br>" + "New user link activate : <a href='" + activateUrl + "'>" + activateUrl + "</a><br>" + "<br>" + "Thank you," + "<br>" + "GIT Jewely Design Gallery Team"
 
@@ -124,7 +124,7 @@ const NewOrder = async (to, userFullName, orderId, orderNumber, orderCreateDate,
     let paymentMethodTxt = paymentMethod == 1 ? "โอนเงินผ่านบัญชีธนาคาร" : "บัตรเครดิต"
     // paymentAmount = "";
     let PaymentStatus = 1;
-    let paymentConfirmUrl = "http://designgallery.git.or.th/paymentconfirm?order=" + orderId;
+    let paymentConfirmUrl = "https://designgallery.git.or.th/paymentconfirm?order=" + orderId;
     let msg = "เรียน, คุณ" + userFullName + "." + "<br>" + "<br>" + "ขอบคุณสำหรับคำสั่งซื้อ" + "<br>" + "<br>" + "หมายเลขคำสั่งซื้อคือ " + orderNumber + "." + "<br>" + "วันที่สั่งซื้อ: " + orderCreateDate + "." + "<br>" + "<br>"
     msg += "<br>" + "<br>" + "รูปแบบการชำระเงิน: " + paymentMethodTxt + "." + "<br>" + "ยอดเงิน: ฿" + paymentAmount + "."
     if (paymentMethod == 1) {
@@ -167,7 +167,7 @@ const OrderTranfer = async (to, orderNumber, orderCreateDate, paymentSlip, payme
 }
 
 const ApproveOrderTranfer = async (to, userFullName, orderNumber, orderCreateDate, paymentSlip, paymentDate) => {
-    let OrderUrl = "http://designgallery.git.or.th/myprofile/orders"
+    let OrderUrl = "https://designgallery.git.or.th/myprofile/orders"
     let subject = "[GIT Jewely Design Gallery] Approve Payment Confirmation"
     // let userFullName = "";
     // let orderNumber = "";

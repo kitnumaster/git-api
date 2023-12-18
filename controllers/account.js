@@ -195,11 +195,11 @@ const ActivateAccount = (req, res, next) => {
             return account.save()
         })
         .then(result => {
-            res.redirect('http://designgallery.git.or.th/login?successActivate=' + activateCode);
+            res.redirect('https://designgallery.git.or.th/login?successActivate=' + activateCode);
             // res.status(200).json({ message: 'Updated!', account: result })
         })
         .catch(err => {
-            res.redirect('http://designgallery.git.or.th/login?errorActivate=' + activateCode);
+            res.redirect('https://designgallery.git.or.th/login?errorActivate=' + activateCode);
             if (!err.statusCode) {
                 err.statusCode = 500
             }
