@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const isAuth = require('../middleware/is-auth')
 const { body } = require('express-validator/check')
+const bodyParser = require('body-parser')
 
 const multer = require('multer')
 const upload = multer()
@@ -39,6 +40,7 @@ router.get('/my-sale-orders', isAuth, GetOrderProductOrders)
 router.get('/product-download/:productId', isAuth, DownloadProduct)
 router.post(
     '/enroll/payment-credit-card-success',
+    bodyParser.text({type: '*/*'}),
     upload.none(),
     CreditCardPayment
 )
