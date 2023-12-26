@@ -94,6 +94,7 @@ const GetNewsLists = (req, res, next) => {
                 .populate("user", {
                     name: 1
                 })
+                .sort(sort)
                 .skip((currentPage - 1) * perPage)
                 .limit(perPage);
         })
