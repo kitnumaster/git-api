@@ -632,8 +632,6 @@ const CreditCardPayment = (req, res, next) => {
         let ar = i.split('=')
         obj[ar[0]] = ar[1]
     }
-	
-    console.log("CreditCardPayment req.req_reference_number", obj.req_reference_number);
     // res.send(obj.req_reference_number)
     if (obj.req_reference_number == undefined) {
         res.redirect('https://designgallery.git.or.th/myprofile/orders?payCredit=error');
