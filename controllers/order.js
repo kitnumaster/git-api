@@ -226,13 +226,15 @@ const GetOrders = (req, res, next) => {
             for (let i of orders) {
                 // 
                 for (let l of i.paymentDetail) {
-                    // console.log(l.product.fileType)
-                    let fileType = await FileType.find({
-                        _id: {
-                            $in: l.product.fileType
-                        }
-                    })
-                    l.product.fileType = fileType
+                    console.log("order fileType",l.product.fileType)
+                    if (l.product.fileType) {
+                        let fileType = await FileType.find({
+                            _id: {
+                                $in: l.product.fileType
+                            }
+                        })
+                        l.product.fileType = fileType
+                    }
                 }
             }
 
