@@ -2,6 +2,7 @@ const Order = require('../models/order')
 const Account = require('../models/account')
 const Product = require('../models/product')
 const ProductSummaries = require('../models/productSummaries')
+const LoginLog = require('../models/log/loginLog')
 const moment = require('moment')
 const Big = require('big.js');
 
@@ -434,7 +435,7 @@ const ReportDesignerOrders = async (req, res, next) => {
                     n++
                     let order = j.order
                     let product = j.product
-                    console.log("productSummaries",i)
+                    console.log("productSummaries", i)
                     let productFound = order.paymentDetail.find(element => element.product.toString() == product._id.toString())
                     // console.log(productFound)
                     let percentFee = (productFound.total * (30 / 100)).toFixed(2);
@@ -470,10 +471,44 @@ const ReportDesignerOrders = async (req, res, next) => {
         })
 }
 
+const ReportLoginLogs = async (req, res, next) => {
+
+    let query = {}
+    let dataDate = null
+    if (req.query.createdAt) {
+        dataDate = req.query.createdAt.split(":")
+        date = moment(dataDate[0]).subtract(7, 'hours').format("YYYY-MM-DD")
+        date2 = moment(dataDate[1]).format("YYYY-MM-DD")
+        query.createdAt = {
+            $gte: new Date(`${date} 17:00:00`),
+            $lte: new Date(`${date2} 16:59:59`)
+        }
+    }
+    // console.log(query)
+    LoginLog.find(query)
+        .populate('account', {
+            password: 0
+        })
+        .then(logs => {
+            res.status(200).json({
+                message: 'Fetched successfully.',
+                logs: logs
+            })
+        })
+        .catch(err => {
+            if (!err.statusCode) {
+                err.statusCode = 500
+            }
+            next(err)
+        })
+
+}
+
 module.exports = {
     ReportOrders,
     ReportCustomers,
     ReportDesigners,
     ReportDesigns,
     ReportDesignerOrders,
+    ReportLoginLogs,
 }

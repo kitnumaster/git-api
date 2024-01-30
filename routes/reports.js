@@ -9,6 +9,7 @@ const {
     ReportDesigners,
     ReportDesigns,
     ReportDesignerOrders,
+    ReportLoginLogs,
 } = require('../controllers/reports')
 
 const {
@@ -21,5 +22,6 @@ router.get('/designers', ReportDesigners)
 router.get('/designs', ReportDesigns)
 router.get('/designer-orders', ReportDesignerOrders)
 router.post('/test-email', TestSendEmail)
+router.get('/access-logs', ReportLoginLogs)
 
 module.exports = router
