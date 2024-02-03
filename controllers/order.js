@@ -226,7 +226,7 @@ const GetOrders = (req, res, next) => {
             for (let i of orders) {
                 // 
                 for (let l of i.paymentDetail) {
-                    console.log("order fileType",l.product.fileType)
+                    console.log("order fileType", l.product.fileType)
                     if (l.product.fileType) {
                         let fileType = await FileType.find({
                             _id: {
@@ -494,7 +494,9 @@ const GetOrderProductOrders = async (req, res, next) => {
             // console.log(count)
             totalItems = count;
             return OrderProduct.find(query)
-                .populate("account")
+                .populate("account", {
+                    password: 0
+                })
                 .populate("order", {
                     orderNumber: 1,
                 })

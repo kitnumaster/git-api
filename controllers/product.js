@@ -101,7 +101,9 @@ const GetProducts = (req, res, next) => {
             .then(count => {
                 totalItems = count;
                 return Product.find(query)
-                    .populate("account")
+                    .populate("account", {
+                        password: 0
+                    })
                     .populate("material", {
                         materialName: 1,
                     })
@@ -225,7 +227,9 @@ const UserGetProducts = (req, res, next) => {
         .then(count => {
             totalItems = count;
             return Product.find(query)
-                .populate("account")
+                .populate("account", {
+                    password: 0
+                })
                 .populate("material", {
                     materialName: 1,
                 })
@@ -428,7 +432,9 @@ const UserGetProductsHomepage = async (req, res, next) => {
 const GetProduct = (req, res, next) => {
     const productId = req.params.productId
     Product.findById(productId)
-        .populate("account")
+        .populate("account", {
+            password: 0
+        })
         .populate("material", {
             materialName: 1,
         })
@@ -471,7 +477,9 @@ const UserGetProduct = (req, res, next) => {
     // console.log(req.userId)
     const productId = req.params.productId
     Product.findById(productId)
-        .populate("account")
+        .populate("account", {
+            password: 0
+        })
         .populate("material", {
             materialName: 1,
             materialNameTH: 1,
@@ -721,7 +729,9 @@ const GetProductSummaries = async (req, res, next) => {
             .then(count => {
                 totalItems = count;
                 return ProductSummaries.find(query)
-                    .populate("account")
+                    .populate("account", {
+                        password: 0
+                    })
                     .populate("products.product")
                     .populate("products.order")
                     .sort(sort)

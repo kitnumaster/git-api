@@ -92,7 +92,8 @@ const GetNewsLists = (req, res, next) => {
             totalItems = count;
             return News.find(query)
                 .populate("user", {
-                    name: 1
+                    name: 1,
+                    password: 0,
                 })
                 .sort(sort)
                 .skip((currentPage - 1) * perPage)
@@ -132,7 +133,8 @@ const GetNews = (req, res, next) => {
 
     News.findOne(query)
         .populate("user", {
-            name: 1
+            name: 1,
+            password: 0
         })
         .then(news => {
             if (!news) {

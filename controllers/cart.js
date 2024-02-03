@@ -75,7 +75,7 @@ const GetCarts = (req, res, next) => {
                     _id: i.product.account
                 }, {
                     firstName: 1,
-                    lastName: 1
+                    lastName: 1,
                 })
                 totalDiscount = totalDiscount.plus(Number(i.product.discount))
                 totalPrice = totalPrice.plus(Number(i.product.price))

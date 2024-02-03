@@ -36,7 +36,9 @@ const GetAccounts = (req, res, next) => {
         const currentPage = req.query.page || 1;
         const perPage = 30;
         let totalItems;
-        Account.find(query)
+        Account.find(query, {
+            password: 0
+        })
             .countDocuments()
             .then(count => {
                 totalItems = count
@@ -109,7 +111,9 @@ const UpdateAccount = (req, res, next) => {
     }
 
     const update = req.body.update
-    Account.findById(accountId)
+    Account.findById(accountId, {
+        password: 0
+    })
         .then(account => {
             if (!account) {
                 const error = new Error('Could not find.');
@@ -147,7 +151,9 @@ const ApproveAccount = (req, res, next) => {
         }
 
         const userType = req.body.approve ? 2 : 1
-        Account.findById(accountId)
+        Account.findById(accountId, {
+            password: 0
+        })
             .then(account => {
                 if (!account) {
                     const error = new Error('Could not find.');
@@ -183,7 +189,9 @@ const ActivateAccount = (req, res, next) => {
     let activateCode = null
     activateCode = req.params.activateCode
 
-    Account.findOne({ activateCode: activateCode })
+    Account.findOne({ activateCode: activateCode }, {
+        password: 0
+    })
         .then(account => {
             if (!account) {
                 const error = new Error('Could not find.');
