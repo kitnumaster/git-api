@@ -315,7 +315,8 @@ const ReportDesigns = async (req, res, next) => {
     Product.find(query)
         .populate("account", {
             firstName: 1,
-            lastName: 1
+            lastName: 1,
+            password: 0
         })
         .populate("material", {
             _id: 0,
@@ -424,6 +425,7 @@ const ReportDesignerOrders = async (req, res, next) => {
             bankAccountName: 1,
             bankAccount: 1,
             bankName: 1,
+            password: 0
         })
         .populate("products.order")
         .populate("products.product")

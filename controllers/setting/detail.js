@@ -42,7 +42,27 @@ const GetDetails = (req, res, next) => {
     //     error.statusCode = 403;
     //     throw error;
     // }
-    Detail.find({})
+    let query = {}
+    let dataDate = null
+    if (req.query.createdAt) {
+        dataDate = req.query.createdAt.split(":")
+        date = moment(dataDate[0]).subtract(7, 'hours').format("YYYY-MM-DD")
+        date2 = moment(dataDate[1]).format("YYYY-MM-DD")
+        query.createdAt = {
+            $gte: new Date(`${date} 17:00:00`),
+            $lte: new Date(`${date2} 16:59:59`)
+        }
+    }
+    let sort = {
+        createdAt: -1
+    }
+    if (req.query.sortBy) {
+        let sortBy = req.query.sortBy
+        sort = {
+            [sortBy]: req.query.sortType || -1
+        }
+    }
+    Detail.find(query)
         .then(details => {
             res.status(200).json({
                 message: 'Fetched successfully.',

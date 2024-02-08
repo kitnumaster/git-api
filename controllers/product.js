@@ -289,7 +289,8 @@ const UserGetProductsHomepage = async (req, res, next) => {
     let newProducts = await Product.find({ sold: false, active: true })
         .populate("account", {
             firstName: 1,
-            lastName: 1
+            lastName: 1,
+            password: 0
         })
         .populate("material", {
             materialName: 1,
@@ -319,7 +320,8 @@ const UserGetProductsHomepage = async (req, res, next) => {
     let viewProducts = await Product.find({ sold: false, active: true })
         .populate("account", {
             firstName: 1,
-            lastName: 1
+            lastName: 1,
+            password: 0
         })
         .populate("material", {
             materialName: 1,
@@ -349,7 +351,8 @@ const UserGetProductsHomepage = async (req, res, next) => {
     let discountProducts = await Product.find({ sold: false, active: true, discount: { $exists: true }, discount: { $ne: 0 } })
         .populate("account", {
             firstName: 1,
-            lastName: 1
+            lastName: 1,
+            password: 0
         })
         .populate("material", {
             materialName: 1,
@@ -390,7 +393,8 @@ const UserGetProductsHomepage = async (req, res, next) => {
         let hot = await Product.findOne({ sold: false, active: true, account: i._id })
             .populate("account", {
                 firstName: 1,
-                lastName: 1
+                lastName: 1,
+                password: 0
             })
             .populate("material", {
                 materialName: 1,
