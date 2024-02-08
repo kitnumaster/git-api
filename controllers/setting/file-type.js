@@ -1,6 +1,6 @@
 const { validationResult } = require('express-validator/check')
 const FileType = require('../../models/setting/file-type')
-
+const moment = require('moment')
 const CreateFileType = (req, res, next) => {
     if (req.userType != 'admin') {
         const error = new Error('Permission denied.');

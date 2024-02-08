@@ -1,6 +1,6 @@
 const { validationResult } = require('express-validator/check')
 const Trend = require('../../models/setting/trend')
-
+const moment = require('moment')
 const CreateTrend = (req, res, next) => {
     if (req.userType != 'admin') {
         const error = new Error('Permission denied.');

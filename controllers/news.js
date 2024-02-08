@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator/check')
 const News = require('../models/news')
+const moment = require('moment')
 
 const CreateNews = (req, res, next) => {
     if (req.userType != 'admin') {

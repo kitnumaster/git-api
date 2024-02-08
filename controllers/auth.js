@@ -214,7 +214,11 @@ exports.AccountLogin = (req, res, next) => {
 
 exports.GetAdmins = (req, res, next) => {
   if (req.userType == 'admin') {
-    User.find({})
+    let query = {}
+    if (req.query.email) {
+      query.email = req.query.summaryNumber
+  }
+    User.find(query)
       .then(details => {
         res.status(200).json({
           message: 'Fetched successfully.',

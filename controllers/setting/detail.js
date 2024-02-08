@@ -1,6 +1,6 @@
 const { validationResult } = require('express-validator/check')
 const Detail = require('../../models/setting/detail')
-
+const moment = require('moment')
 const CreateDetail = (req, res, next) => {
     if (req.userType != 'admin') {
         const error = new Error('Permission denied.');
